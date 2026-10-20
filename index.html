@@ -6,7 +6,7 @@
     
     <title>SOM I chai | Соцсеть, Казино и Игры</title>
     <meta name="description" content="SOM I chai - новая соцсеть! Тут есть общение, казино и наша валюта. Хочешь выделятся? Купи крутую рамку для аватарки и общайся как крутой челик!">
-    <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, шахта, блэкджек">
+    <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, шахта, блэкджек, мемо">
     <meta name="google-site-verification" content="jjsBjLwajw9ldAsux1UKeNJYY0lkkiV6yw-BRXIpgaw" />
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -54,9 +54,9 @@
 
         /* --- ФИКС ВСЕХ ПРЕФИКСОВ В ПРОФИЛЕ --- */
         .profile-prefix {
-            margin: 0 !important; /* Убираем боковые отступы */
+            margin: 0 !important;
             padding: 4px 6px !important;
-            font-size: 10px !important; /* Чуть уменьшаем шрифт */
+            font-size: 10px !important;
             text-align: center;
             line-height: 1.2;
             display: flex;
@@ -64,8 +64,8 @@
             justify-content: center;
             width: 100%;
             height: 100%;
-            border-radius: 50%; /* Делаем фон круглым внутри кружочка */
-            word-break: break-word; /* Если слово длинное, оно перенесется */
+            border-radius: 50%;
+            word-break: break-word;
             overflow: hidden;
             box-sizing: border-box;
         }
@@ -246,6 +246,38 @@
         .shop-buy-btn.equipped { background: linear-gradient(180deg, #ff4d6d, #e94560); color: #fff; cursor: default; box-shadow: 0 4px 15px rgba(233,69,96,0.3); border-bottom-color: #b8203d;}
         .frame-preview { width: 50px; height: 50px; border-radius: 50%; background: #111827; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 20px; }
 
+        /* --- МЕМО (НАЙДИ ПАРУ) --- */
+        .memory-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            max-width: 420px; 
+            margin: 20px auto; 
+        }
+        .memory-card { 
+            width: 100%; 
+            aspect-ratio: 1; 
+            background: #1e1b4b; 
+            border-radius: 15px; 
+            border: 2px solid rgba(255,255,255,0.1);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 40px; 
+            cursor: pointer; 
+            user-select: none; 
+            transition: transform 0.3s, background 0.3s, box-shadow 0.3s; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .memory-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
+        .memory-card::before { content: '?'; font-weight: bold; color: rgba(255,255,255,0.2); font-size: 30px; }
+        .memory-card.flipped { background: #e94560; transform: scale(0.95); }
+        .memory-card.flipped::before { content: ''; }
+        .memory-card.matched { background: #00ffcc; cursor: default; box-shadow: 0 0 20px rgba(0,255,204,0.5); }
+        .memory-card.matched::before { content: ''; }
+        .memory-card span { display: none; }
+        .memory-card.flipped span, .memory-card.matched span { display: block; }
+
         /* ========================================= */
         /* --- ГЛОБАЛЬНЫЙ ЧАТ --- */
         /* ========================================= */
@@ -393,6 +425,7 @@
             <button class="nav-btn active" onclick="showTool('tool-clicker', this)">🎮 Кликер</button>
             <button class="nav-btn" onclick="showTool('tool-mine', this); updateUI()">🪨 Шахта</button>
             <button class="nav-btn" onclick="showTool('tool-casino', this)">🎲 Казино</button>
+            <button class="nav-btn" onclick="showTool('tool-memo', this); initMemoGame()">🃏 Мемо</button>
             <button class="nav-btn" onclick="showTool('tool-shop', this); loadShop()">🛒 Магазин</button>
             
             <button class="nav-btn" id="nav-friends" onclick="showTool('tool-friends', this); loadFriendsData()">
@@ -497,6 +530,13 @@
                     </div>
                 </div>
 
+            </div>
+
+            <div id="tool-memo" class="tool-box">
+                <h1>🃏 Мемо</h1>
+                <p style="color: #a0aec0; font-size: 15px; margin-bottom: 15px;">Найди все пары и получи 100 KLZ!</p>
+                <div class="memory-grid" id="memoGrid"></div>
+                <button class="action-btn" style="margin-top: 20px;" onclick="initMemoGame()">Начать заново</button>
             </div>
 
             <div id="tool-shop" class="tool-box">
@@ -961,7 +1001,7 @@
         }
 
         window.startBlackjack = function() {
-            if (bjGameActive) return; // Защита от двойного клика
+            if (bjGameActive) return;
             if (klz < bjBet) { showToast("Недостаточно KLZ для ставки!", "error"); return; }
             playCardSound();
             klz -= bjBet; klz = Number(klz.toFixed(2));
@@ -1063,6 +1103,71 @@
             document.getElementById("bjStartBtn").classList.remove("hidden");
             document.getElementById("bjPlayingBtns").classList.add("hidden");
             document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = false);
+        }
+
+        /* --- ЛОГИКА ИГРЫ МЕМО --- */
+        let memoDeck = [];
+        let memoFlipped = [];
+        let memoLock = false;
+        let memoMatchedPairs = 0;
+
+        window.initMemoGame = function() {
+            const grid = document.getElementById('memoGrid');
+            if(!grid) return;
+            grid.innerHTML = "";
+            memoFlipped = [];
+            memoLock = false;
+            memoMatchedPairs = 0;
+
+            const emojis = ["🍕", "🚀", "👾", "🎮", "🍦", "🐉", "🧙‍♂️", "🦊"];
+            memoDeck = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+
+            memoDeck.forEach((emoji) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.innerHTML = `<span>${emoji}</span>`;
+                card.onclick = () => flipMemoCard(card, emoji);
+                grid.appendChild(card);
+            });
+        };
+
+        function flipMemoCard(card, emoji) {
+            if (memoLock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+            card.classList.add('flipped');
+            memoFlipped.push({ card, emoji });
+            playClick();
+
+            if (memoFlipped.length === 2) {
+                memoLock = true;
+                const [first, second] = memoFlipped;
+
+                if (first.emoji === second.emoji) {
+                    setTimeout(() => {
+                        first.card.classList.remove('flipped'); first.card.classList.add('matched');
+                        second.card.classList.remove('flipped'); second.card.classList.add('matched');
+                        memoFlipped = [];
+                        memoLock = false;
+                        memoMatchedPairs++;
+                        playWinSound();
+                        
+                        if (memoMatchedPairs === 8) {
+                            showToast("Ты выиграл! +100 KLZ", "success");
+                            klz += 100;
+                            updateUI();
+                            saveGameData();
+                        }
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        first.card.classList.remove('flipped');
+                        second.card.classList.remove('flipped');
+                        memoFlipped = [];
+                        memoLock = false;
+                        playLoseSound();
+                    }, 1000);
+                }
+            }
         }
 
         window.loadShop = function() {
@@ -1216,7 +1321,6 @@
                         const isActive = userData.activePrefix === prefixId;
                         const div = document.createElement("div"); 
                         div.className = `my-frame-item ${isActive ? 'active' : ''}`; 
-                        // ВОТ ТУТ ПРИМЕНЯЕТСЯ КЛАСС profile-prefix ДЛЯ ВСЕХ ПРЕФИКСОВ
                         div.innerHTML = `<span class="prefix-${prefixId} profile-prefix">${prefix.name}</span>`;
                         div.onclick = () => window.equipPrefix(prefixId); 
                         myPrefixesList.appendChild(div);
