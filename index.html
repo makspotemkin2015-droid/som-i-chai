@@ -1454,12 +1454,27 @@
 
         function listenToChat() {
             const messagesContainer = document.getElementById("chatMessages");
-            const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(50));
+            // Убрали orderBy, чтобы избежать багов с сортировкой
+            const q = query(collection(db, "messages"), limit(50));
             if(chatUnsubscribe) chatUnsubscribe();
             chatUnsubscribe = onSnapshot(q, (snapshot) => {
                 messagesContainer.innerHTML = "";
-                snapshot.forEach((doc) => {
-                    const msg = doc.data(); let timeStr = "";
+                let msgs = [];
+                snapshot.forEach(doc => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    msgs.push(data);
+                });
+                
+                // Сортируем прямо в браузере
+                msgs.sort((a, b) => {
+                    let t1 = a.createdAt ? a.createdAt.toMillis() : Date.now();
+                    let t2 = b.createdAt ? b.createdAt.toMillis() : Date.now();
+                    return t1 - t2;
+                });
+
+                msgs.forEach((msg) => {
+                    let timeStr = "";
                     if(msg.createdAt) { const date = msg.createdAt.toDate(); timeStr = date.getHours().toString().padStart(2, '0') + ":" + date.getMinutes().toString().padStart(2, '0'); }
                     const isOwn = currentUser && msg.uid === currentUser.uid;
                     const msgDiv = document.createElement("div"); msgDiv.className = `chat-msg ${isOwn ? 'own' : ''}`;
@@ -1474,7 +1489,7 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }, (error) => {
                 console.error("Ошибка прослушивания чата: ", error);
-                showToast("Ошибка чата: " + error.message, "error");
+                showToast("Ошибка чтения чата: " + error.message, "error");
             });
         }
 
@@ -1486,6 +1501,8 @@
             if (text === "") return;
             const now = Date.now(); if (now - lastMessageTime < 2000) { showToast("Не так быстро!", "error"); return; }
             input.value = ""; lastMessageTime = now;
+            
+            console.log("Пытаюсь отправить:", text);
             try {
                 await addDoc(collection(db, "messages"), {
                     text: text, uid: currentUser.uid, nickname: userData.nickname,
@@ -1493,9 +1510,10 @@
                     activePrefix: userData.activePrefix,
                     createdAt: serverTimestamp()
                 });
+                console.log("Сообщение успешно отправлено!");
             } catch (e) { 
-                console.error("Ошибка отправки: ", e); 
-                showToast("Ошибка: " + e.message, "error");
+                console.error("Ошибка отправки сообщения: ", e); 
+                showToast("Ошибка отправки: " + e.message, "error");
             }
         };
 
