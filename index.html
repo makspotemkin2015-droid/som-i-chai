@@ -42,8 +42,15 @@
         .frame-fire { border: 3px solid #ff4500; animation: firePulse 1.5s infinite alternate; }
         .frame-galaxy { border: 3px solid #8a2be2; box-shadow: 0 0 20px rgba(138, 43, 226, 0.8), inset 0 0 10px rgba(138, 43, 226, 0.5); background: linear-gradient(135deg, rgba(138,43,226,0.2), rgba(75,0,130,0.4)); }
 
-        /* --- ПРИПИСКА СОЗДАТЕЛЬ --- */
+        /* --- ПРЕФИКСЫ --- */
         .badge-creator { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .prefix-dota { background: linear-gradient(45deg, #ff0000, #8b0000); color: #fff; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+        .prefix-cs { background: linear-gradient(45deg, #f9a826, #d97706); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(249, 168, 38, 0.5); }
+        .prefix-mag { background: linear-gradient(45deg, #8b5cf6, #4c1d95); color: #fff; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+        .prefix-mlp { background: linear-gradient(45deg, #ff69b4, #00bfff); color: #fff; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 105, 180, 0.5); }
+        .prefix-mell { background: linear-gradient(45deg, #10b981, #064e3b); color: #fff; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .prefix-cool { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .prefix-ny { background: linear-gradient(45deg, #e0f2fe, #38bdf8); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
 
         /* --- КАСТОМНЫЕ УВЕДОМЛЕНИЯ (ТОСТЫ) --- */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
@@ -222,7 +229,7 @@
         .frame-preview { width: 50px; height: 50px; border-radius: 50%; background: #111827; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 20px; }
 
         /* ========================================= */
-        /* --- ОБНОВЛЕННЫЙ ГЛОБАЛЬНЫЙ ЧАТ --- */
+        /* --- ГЛОБАЛЬНЫЙ ЧАТ --- */
         /* ========================================= */
         #tool-chat { max-width: 900px; padding-top: 20px; }
         
@@ -243,7 +250,7 @@
 
         .chat-container { 
             display: flex; flex-direction: column; 
-            height: calc(100vh - 280px); /* Занимает почти весь экран */
+            height: calc(100vh - 280px); 
             min-height: 500px;
             background: rgba(0,0,0,0.4); 
             border-radius: 20px; 
@@ -257,8 +264,8 @@
         .chat-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 22px; flex-shrink: 0; }
         .chat-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         .chat-bubble-wrapper { display: flex; flex-direction: column; }
-        .chat-name { font-size: 13px; color: #a0aec0; margin-bottom: 6px; margin-left: 5px; font-weight: 600;}
-        .chat-msg.own .chat-name { text-align: right; margin-right: 5px; margin-left: 0; }
+        .chat-name { font-size: 13px; color: #a0aec0; margin-bottom: 6px; margin-left: 5px; font-weight: 600; display: flex; align-items: center; gap: 5px;}
+        .chat-msg.own .chat-name { text-align: right; margin-right: 5px; margin-left: 0; justify-content: flex-end;}
         
         .chat-bubble { 
             background: #1e1b4b; 
@@ -507,6 +514,9 @@
 
                 <div class="shop-section-title">Рамки для Аватарки</div>
                 <div class="shop-list" id="frameShopList"></div>
+
+                <div class="shop-section-title">Префиксы для Ника</div>
+                <div class="shop-list" id="prefixShopList"></div>
             </div>
 
             <div id="tool-friends" class="tool-box" style="max-width: 850px;">
@@ -535,7 +545,7 @@
                 </div>
             </div>
 
-            <!-- ОБНОВЛЕННЫЙ ГЛОБАЛЬНЫЙ ЧАТ -->
+            <!-- ГЛОБАЛЬНЫЙ ЧАТ -->
             <div id="tool-chat" class="tool-box">
                 <div class="chat-header-panel">
                     <div>
@@ -560,8 +570,13 @@
 
             <div id="tool-profile" class="tool-box">
                 <h1>Настройка профиля</h1>
-                <p style="color: #a0aec0; margin-bottom: 10px;">Твои рамки:</p>
+                
+                <p style="color: #a0aec0; margin-bottom: 5px;">Твои префиксы:</p>
+                <div class="my-frames-list" id="myPrefixesList" style="margin-bottom: 15px;"></div>
+
+                <p style="color: #a0aec0; margin-bottom: 5px;">Твои рамки:</p>
                 <div class="my-frames-list" id="myFramesList"></div>
+                
                 <div class="avatar-picker" id="avatarPicker"></div>
                 <input type="text" id="customAvatarInput" placeholder="Ссылка на картинку (https://...)">
                 <input type="text" id="nicknameInput" placeholder="Твой никнейм" maxlength="20">
@@ -604,7 +619,7 @@
         };
 
         let currentUser = null;
-        let userData = { nickname: "Игрок", avatar: "😎", customAvatarUrl: "", frame: "none", unlockedFrames: ["none"], friends: [], requests: [] }; 
+        let userData = { nickname: "Игрок", avatar: "😎", customAvatarUrl: "", frame: "none", unlockedFrames: ["none"], unlockedPrefixes: [], activePrefix: "none", friends: [], requests: [] }; 
         
         let totalClicks = 0, klz = 0;
         let clickPower = 1, autoClickers = 0, powerCost = 100, autoCost = 250;
@@ -632,6 +647,16 @@
             { id: "neon", name: "Неоновая", price: 1000, desc: "Кислотный киберпанк." },
             { id: "fire", name: "Огненная", price: 2500, desc: "Пульсирует пламенем." },
             { id: "galaxy", name: "Космическая", price: 5000, desc: "Тайны вселенной." }
+        ];
+
+        const SHOP_PREFIXES = [
+            { id: "dota", name: "DOTA2", price: 500, desc: "Для истинных карриеров." },
+            { id: "cs", name: "CS2", price: 550, desc: "Rush B, no stop!" },
+            { id: "mag", name: "маг", price: 600, desc: "Магия в твоих руках." },
+            { id: "mlp", name: "MLP FAN", price: 700, desc: "Дружба - это чудо." },
+            { id: "mell", name: "меллстрой", price: 800, desc: "Сила и мощь." },
+            { id: "cool", name: "круче всех крутых", price: 900, desc: "Ты просто легенда." },
+            { id: "ny", name: "новый год ❄️", price: 1000, desc: "Праздничное настроение!" }
         ];
 
         function formatKlz(val) { return Number(val.toFixed(2)).toString(); }
@@ -689,13 +714,22 @@
             else el.innerText = emoji;
         }
 
+        function getPrefixHtml(prefixId, email) {
+            if (email === CREATOR_EMAIL) return '<span class="badge-creator">СОЗДАТЕЛЬ</span>';
+            if (prefixId === "none" || !prefixId) return '';
+            
+            const prefix = SHOP_PREFIXES.find(p => p.id === prefixId);
+            if (!prefix) return '';
+            
+            return `<span class="prefix-${prefixId}">${prefix.name}</span>`;
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 document.getElementById("authScreen").classList.add("hidden");
                 document.getElementById("mainApp").classList.remove("hidden");
                 document.getElementById("userEmail").innerText = user.email;
-                document.getElementById("sideBadge").innerHTML = user.email === CREATOR_EMAIL ? '<span class="badge-creator">СОЗДАТЕЛЬ</span>' : '';
                 
                 const docRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(docRef);
@@ -705,6 +739,7 @@
                     userData = { 
                         nickname: data.nickname, avatar: data.avatar || "😎", customAvatarUrl: data.customAvatarUrl || "",
                         frame: data.frame || "none", unlockedFrames: data.unlockedFrames || ["none"],
+                        unlockedPrefixes: data.unlockedPrefixes || [], activePrefix: data.activePrefix || "none",
                         friends: data.friends || [], requests: data.requests || []
                     };
                     
@@ -712,22 +747,23 @@
                     clickPower = data.clickPower || 1; autoClickers = data.autoClickers || 0; powerCost = data.powerCost || 100; autoCost = data.autoCost || 250;
                     coal = data.coal || 0; pickaxeLevel = data.pickaxeLevel || 1; pickaxeCost = data.pickaxeCost || 150;
 
-                    if (user.email === CREATOR_EMAIL && klz > 500) {
-                        klz = 500; await setDoc(docRef, { klz: klz }, { merge: true });
-                    }
-                    
                     setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, userData.customAvatarUrl, userData.frame);
                     document.getElementById("sideNick").innerText = userData.nickname;
                     
+                    let prefixHtml = getPrefixHtml(userData.activePrefix, user.email);
+                    const badgeContainer = document.getElementById("sideBadge");
+                    badgeContainer.innerHTML = prefixHtml;
+
                     updateUI(); startAutoClicker(); listenToFriendsAndRequests();
                 } else {
                     await setDoc(docRef, { 
                         email: user.email, nickname: "Игрок_" + Math.floor(Math.random() * 1000), avatar: "😎", customAvatarUrl: "",
                         clicks: 0, klz: user.email === CREATOR_EMAIL ? 500 : 0, clickPower: 1, autoClickers: 0, powerCost: 100, autoCost: 250, 
                         coal: 0, pickaxeLevel: 1, pickaxeCost: 150, createdAt: Date.now(),
-                        frame: "none", unlockedFrames: ["none"], friends: [], requests: []
+                        frame: "none", unlockedFrames: ["none"], unlockedPrefixes: [], activePrefix: "none", friends: [], requests: []
                     }, { merge: true });
                     klz = user.email === CREATOR_EMAIL ? 500 : 0;
+                    document.getElementById("sideBadge").innerHTML = getPrefixHtml("none", user.email);
                     updateUI();
                 }
                 listenToChat();
@@ -764,6 +800,10 @@
             
             document.getElementById("coalCount").innerText = coal;
             document.getElementById("coalPerClick").innerText = pickaxeLevel;
+            
+            if (currentUser) {
+                document.getElementById("sideBadge").innerHTML = getPrefixHtml(userData.activePrefix, currentUser.email);
+            }
         }
 
         function saveGameData() {
@@ -779,7 +819,6 @@
             }, 2000);
         }
 
-        // --- ЛОГИКА КЛИКЕРОВ ---
         window.handleGamepadClick = function(event) {
             if (!currentUser) return;
             totalClicks += clickPower;
@@ -793,7 +832,6 @@
             updateUI(); saveGameData();
         };
 
-        // --- ЛОГИКА ШАХТЫ ---
         window.handleMineClick = function(event) {
             if (!currentUser) return;
             coal += pickaxeLevel;
@@ -817,7 +855,6 @@
             updateUI(); saveGameData();
         };
 
-        // --- КАЗИНО ---
         window.setBet = function(game, amount, btn) {
             if (game === 'rps') {
                 rpsBet = amount; document.querySelectorAll('#rpsBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
@@ -1005,7 +1042,6 @@
             document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = false);
         }
 
-        // --- МАГАЗИН ---
         window.loadShop = function() {
             document.getElementById("powerLevel").innerText = clickPower;
             document.getElementById("autoLevel").innerText = autoClickers;
@@ -1028,6 +1064,20 @@
                 else btnHtml = `<button class="shop-buy-btn" onclick="buyFrame('${frame.id}', ${frame.price})" ${klz < frame.price ? 'disabled' : ''}>${frame.price} KLZ</button>`;
                 div.innerHTML = `<div style="display:flex; align-items:center;"><div class="frame-preview frame-${frame.id}">😎</div><div class="shop-info"><div class="shop-title">${frame.name}</div><div class="shop-desc">${frame.desc}</div></div></div>${btnHtml}`;
                 frameList.appendChild(div);
+            });
+
+            const prefixList = document.getElementById("prefixShopList"); prefixList.innerHTML = "";
+            SHOP_PREFIXES.forEach(prefix => {
+                const isUnlocked = userData.unlockedPrefixes.includes(prefix.id);
+                const isEquipped = userData.activePrefix === prefix.id;
+                const div = document.createElement("div"); div.className = "shop-item";
+                let btnHtml = "";
+                if (isEquipped) btnHtml = `<button class="shop-buy-btn equipped" disabled>Надето</button>`;
+                else if (isUnlocked) btnHtml = `<button class="shop-buy-btn" style="background: linear-gradient(180deg, #a855f7, #7e22ce); border-bottom: 4px solid #581c87; color: white;" onclick="equipPrefix('${prefix.id}')">Надеть</button>`;
+                else btnHtml = `<button class="shop-buy-btn" onclick="buyPrefix('${prefix.id}', ${prefix.price})" ${klz < prefix.price ? 'disabled' : ''}>${prefix.price} KLZ</button>`;
+                
+                div.innerHTML = `<div style="display:flex; align-items:center;"><div class="shop-info"><div class="shop-title"><span class="prefix-${prefix.id}">${prefix.name}</span></div><div class="shop-desc">${prefix.desc}</div></div></div>${btnHtml}`;
+                prefixList.appendChild(div);
             });
         };
 
@@ -1065,6 +1115,29 @@
             }
         };
 
+        window.buyPrefix = async function(id, price) {
+            if (klz >= price && !userData.unlockedPrefixes.includes(id)) {
+                klz -= price; userData.unlockedPrefixes.push(id); userData.activePrefix = id;
+                playWinSound(); updateUI(); loadShop();
+                await setDoc(doc(db, "users", currentUser.uid), { klz: klz, activePrefix: userData.activePrefix, unlockedPrefixes: userData.unlockedPrefixes }, { merge: true });
+                updateUI();
+            }
+        };
+
+        window.equipPrefix = async function(id) {
+            if (userData.unlockedPrefixes.includes(id)) {
+                userData.activePrefix = id; playClick(); loadShop();
+                await setDoc(doc(db, "users", currentUser.uid), { activePrefix: userData.activePrefix }, { merge: true });
+                updateUI(); loadMyProfile();
+            }
+        };
+
+        window.removePrefix = async function() {
+            userData.activePrefix = "none"; playClick(); loadShop();
+            await setDoc(doc(db, "users", currentUser.uid), { activePrefix: "none" }, { merge: true });
+            updateUI(); loadMyProfile();
+        };
+
         function startAutoClicker() {
             if (autoClickInterval) clearInterval(autoClickInterval);
             autoClickInterval = setInterval(() => {
@@ -1072,7 +1145,6 @@
             }, 1000);
         }
 
-        // --- ПРОФИЛЬ ---
         const availableAvatars = ["😎", "🐉", "👽", "🔥", "🦊", "🤖", "💀", "🍕", "🥷", "👑", "🐺", "🧙‍♂️"];
         const picker = document.getElementById("avatarPicker");
         availableAvatars.forEach(emoji => {
@@ -1090,17 +1162,41 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 userData.frame = data.frame || "none"; userData.unlockedFrames = data.unlockedFrames || ["none"];
+                userData.activePrefix = data.activePrefix || "none"; userData.unlockedPrefixes = data.unlockedPrefixes || [];
+                
                 document.getElementById("nicknameInput").value = data.nickname || "";
                 userData.avatar = data.avatar || "😎"; userData.customAvatarUrl = data.customAvatarUrl || "";
                 document.getElementById("customAvatarInput").value = userData.customAvatarUrl;
                 document.querySelectorAll('.avatar-option').forEach(el => {
                     el.classList.remove('selected'); if (!userData.customAvatarUrl && el.innerText === userData.avatar) el.classList.add('selected');
                 });
+                
                 const myFramesList = document.getElementById("myFramesList"); myFramesList.innerHTML = "";
                 userData.unlockedFrames.forEach(frameId => {
                     const isActive = userData.frame === frameId;
                     const div = document.createElement("div"); div.className = `my-frame-item frame-${frameId} ${isActive ? 'active' : ''}`; div.innerHTML = userData.avatar;
                     div.onclick = () => window.equipFrame(frameId); myFramesList.appendChild(div);
+                });
+
+                const myPrefixesList = document.getElementById("myPrefixesList"); myPrefixesList.innerHTML = "";
+                
+                const noPrefixDiv = document.createElement("div"); 
+                noPrefixDiv.className = `my-frame-item ${userData.activePrefix === 'none' ? 'active' : ''}`; 
+                noPrefixDiv.innerText = "❌";
+                noPrefixDiv.title = "Без префикса";
+                noPrefixDiv.onclick = () => window.removePrefix();
+                myPrefixesList.appendChild(noPrefixDiv);
+
+                userData.unlockedPrefixes.forEach(prefixId => {
+                    const prefix = SHOP_PREFIXES.find(p => p.id === prefixId);
+                    if (prefix) {
+                        const isActive = userData.activePrefix === prefixId;
+                        const div = document.createElement("div"); 
+                        div.className = `my-frame-item ${isActive ? 'active' : ''}`; 
+                        div.innerHTML = `<span class="prefix-${prefixId}" style="font-size:12px;">${prefix.name}</span>`;
+                        div.onclick = () => window.equipPrefix(prefixId); 
+                        myPrefixesList.appendChild(div);
+                    }
                 });
             }
         };
@@ -1116,7 +1212,6 @@
             playWinSound(); showToast("Профиль успешно сохранен!", "success"); loadMyProfile();
         };
 
-        // --- ДРУЗЬЯ ---
         function listenToFriendsAndRequests() {
             if (friendsUnsubscribe) friendsUnsubscribe();
             friendsUnsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
@@ -1267,8 +1362,10 @@
                     const msgDiv = document.createElement("div"); msgDiv.className = `chat-msg ${isOwn ? 'own' : ''}`;
                     let avatarHtml = (msg.customAvatarUrl && msg.customAvatarUrl.trim() !== "") ? `<img src="${msg.customAvatarUrl}">` : (msg.avatar || "👤");
                     const msgFrame = msg.frame || "none";
-                    let badgeHtml = msg.email === CREATOR_EMAIL ? '<span class="badge-creator" style="font-size:9px; padding:2px 6px;">СОЗДАТЕЛЬ</span>' : '';
-                    msgDiv.innerHTML = `<div class="chat-avatar frame-${msgFrame}">${avatarHtml}</div><div class="chat-bubble-wrapper"><div class="chat-name">${msg.nickname} ${badgeHtml} • ${timeStr}</div><div class="chat-bubble">${msg.text}</div></div>`;
+                    
+                    let prefixHtml = getPrefixHtml(msg.activePrefix, msg.email);
+
+                    msgDiv.innerHTML = `<div class="chat-avatar frame-${msgFrame}">${avatarHtml}</div><div class="chat-bubble-wrapper"><div class="chat-name">${msg.nickname} ${prefixHtml} • ${timeStr}</div><div class="chat-bubble">${msg.text}</div></div>`;
                     messagesContainer.appendChild(msgDiv);
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1286,7 +1383,9 @@
             try {
                 await addDoc(collection(db, "messages"), {
                     text: text, uid: currentUser.uid, nickname: userData.nickname,
-                    avatar: userData.avatar, customAvatarUrl: userData.customAvatarUrl, frame: userData.frame, email: currentUser.email, createdAt: serverTimestamp()
+                    avatar: userData.avatar, customAvatarUrl: userData.customAvatarUrl, frame: userData.frame, email: currentUser.email,
+                    activePrefix: userData.activePrefix,
+                    createdAt: serverTimestamp()
                 });
             } catch (e) { console.error("Ошибка отправки: ", e); }
         };
@@ -1318,12 +1417,13 @@
                 usersArray.forEach((data, index) => {
                     let rank = index + 1;
                     let medal = rank === 1 ? "🥇 " : rank === 2 ? "🥈 " : rank === 3 ? "🥉 " : "";
-                    let badgeHtml = data.email === CREATOR_EMAIL ? '<span class="badge-creator">СОЗДАТЕЛЬ</span>' : "";
                     let avatarHtml = (data.customAvatarUrl && data.customAvatarUrl.trim() !== "") ? `<img src="${data.customAvatarUrl}">` : (data.avatar || "👤");
                     let frameClass = data.frame ? `frame-${data.frame}` : "frame-none";
                     
+                    let prefixHtml = getPrefixHtml(data.activePrefix, data.email);
+
                     const li = document.createElement("li"); li.className = `user-item ${rank <= 3 ? 'rank-' + rank : ''}`;
-                    li.innerHTML = `<div class="user-info-left"><div class="rank-number" style="width:35px; font-weight:bold; color:#8899a6; font-size:18px;">${medal}${rank}</div><div class="user-avatar ${frameClass}">${avatarHtml}</div><div><div class="user-nick-list">${data.nickname || "Без имени"} ${badgeHtml}</div><div class="user-email-list">${data.email}</div></div></div><div class="user-score">${formatKlz(data.klz || 0)} KLZ</div>`;
+                    li.innerHTML = `<div class="user-info-left"><div class="rank-number" style="width:35px; font-weight:bold; color:#8899a6; font-size:18px;">${medal}${rank}</div><div class="user-avatar ${frameClass}">${avatarHtml}</div><div><div class="user-nick-list">${data.nickname || "Без имени"} ${prefixHtml}</div><div class="user-email-list">${data.email}</div></div></div><div class="user-score">${formatKlz(data.klz || 0)} KLZ</div>`;
                     list.appendChild(li);
                 });
             } catch (e) { list.innerHTML = "<p style='text-align:center; color:#e94560;'>Ошибка базы.</p>"; } 
