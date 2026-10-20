@@ -13,7 +13,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
-        /* --- КРАСИВЫЙ СКРОЛЛБАР --- */
+        /* --- СКРОЛЛБАР --- */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(233, 69, 96, 0.5); border-radius: 10px; }
@@ -45,6 +45,23 @@
         /* --- ПРИПИСКА СОЗДАТЕЛЬ --- */
         .badge-creator { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
 
+        /* --- КАСТОМНЫЕ УВЕДОМЛЕНИЯ (ТОСТЫ) --- */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { 
+            background: rgba(30, 27, 75, 0.9); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid #00ffcc; 
+            color: #fff; padding: 15px 25px; border-radius: 10px; font-weight: 600; font-size: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+            display: flex; align-items: center; gap: 10px; pointer-events: auto; max-width: 350px;
+        }
+        .toast.error { border-left-color: #ff3333; }
+        .toast.success { border-left-color: #00ffcc; }
+        .toast.fade-out { animation: slideOut 0.3s ease forwards; }
+        
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
         /* --- ЭКРАН ВХОДА --- */
         .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 41, 0.8); backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-box { background: rgba(30, 27, 75, 0.6); backdrop-filter: blur(25px); padding: 40px; border-radius: 24px; text-align: center; width: 380px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
@@ -52,34 +69,17 @@
         .login-box input, .tool-box input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 15px; transition: 0.3s; }
         .login-box input:focus, .tool-box input:focus { border-color: #e94560; box-shadow: 0 0 15px rgba(233, 69, 96, 0.5); }
 
-        /* --- КНОПКИ (ОБНОВЛЕННЫЕ 3D) --- */
+        /* --- КНОПКИ --- */
         .action-btn { 
             background: linear-gradient(180deg, #ff4d6d 0%, #e94560 100%);
-            color: white; 
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-bottom: 4px solid #b8203d; /* 3D Эффект */
-            padding: 15px; 
-            font-size: 16px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: 700; 
+            color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-bottom: 4px solid #b8203d;
+            padding: 15px; font-size: 16px; border-radius: 12px; cursor: pointer; font-weight: 700; 
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3), inset 0 1px 0 rgba(255,255,255,0.4); 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            width: 100%; 
-            margin-top: 15px; 
+            text-transform: uppercase; letter-spacing: 0.5px; width: 100%; margin-top: 15px; 
         }
-        .action-btn:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6), inset 0 1px 0 rgba(255,255,255,0.4); 
-            filter: brightness(1.1); 
-        }
-        .action-btn:active { 
-            transform: translateY(2px); 
-            border-bottom: 1px solid #b8203d; 
-            box-shadow: 0 2px 10px rgba(233, 69, 96, 0.3); 
-        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6), inset 0 1px 0 rgba(255,255,255,0.4); filter: brightness(1.1); }
+        .action-btn:active { transform: translateY(2px); border-bottom: 1px solid #b8203d; box-shadow: 0 2px 10px rgba(233, 69, 96, 0.3); }
         
         .switch-auth { margin-top: 20px; font-size: 14px; color: #8899a6; cursor: pointer; transition: 0.3s; }
         .switch-auth:hover { color: #e94560; text-shadow: 0 0 8px #e94560; }
@@ -93,31 +93,17 @@
         .sidebar h2 { color: #fff; text-align: center; margin-bottom: 30px; font-weight: 800; text-shadow: 0 0 20px #00ffcc; letter-spacing: 1px; }
         
         .nav-btn { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid transparent; 
-            color: #a0aec0; 
-            padding: 15px 20px; 
-            text-align: left; 
-            font-size: 16px; 
-            cursor: pointer; 
-            border-radius: 12px; 
-            margin-bottom: 8px; 
-            transition: all 0.3s ease; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            position: relative; 
+            background: rgba(255,255,255,0.02); border: 1px solid transparent; color: #a0aec0; 
+            padding: 15px 20px; text-align: left; font-size: 16px; cursor: pointer; 
+            border-radius: 12px; margin-bottom: 8px; transition: all 0.3s ease; 
+            display: flex; align-items: center; gap: 10px; position: relative; 
         }
         .nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; transform: translateX(5px); border-color: rgba(255,255,255,0.1); }
         .nav-btn.active { 
             background: linear-gradient(90deg, rgba(233, 69, 96, 0.9), rgba(233, 69, 96, 0.1)); 
-            color: #fff; 
-            font-weight: 600; 
-            border-left: 4px solid #e94560; 
-            box-shadow: 0 0 15px rgba(233, 69, 96, 0.3); 
-            border-top: 1px solid rgba(233,69,96,0.3);
-            border-bottom: 1px solid rgba(233,69,96,0.3);
-            border-right: 1px solid rgba(233,69,96,0.1);
+            color: #fff; font-weight: 600; border-left: 4px solid #e94560; 
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.3); border-top: 1px solid rgba(233,69,96,0.3);
+            border-bottom: 1px solid rgba(233,69,96,0.3); border-right: 1px solid rgba(233,69,96,0.1);
         }
         
         .notif-badge { position: absolute; right: 10px; top: 15px; background: #ff3333; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 51, 51, 0.8); animation: goldPulse 2s infinite; }
@@ -137,14 +123,10 @@
         
         /* БАЛАНС */
         .top-right-balance { 
-            position: fixed; top: 30px; right: 40px; 
-            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,140,0,0.05)); 
-            backdrop-filter: blur(15px); padding: 12px 25px; border-radius: 20px; 
-            font-size: 26px; font-weight: 800; color: #ffd700; 
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); 
-            border: 1px solid rgba(255, 215, 0, 0.4); 
-            z-index: 100; display: flex; align-items: center; gap: 10px; 
-            animation: goldPulse 3s infinite; 
+            position: fixed; top: 30px; right: 40px; background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,140,0,0.05)); 
+            backdrop-filter: blur(15px); padding: 12px 25px; border-radius: 20px; font-size: 26px; font-weight: 800; color: #ffd700; 
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8); border: 1px solid rgba(255, 215, 0, 0.4); 
+            z-index: 100; display: flex; align-items: center; gap: 10px; animation: goldPulse 3s infinite; 
         }
 
         /* ОКНО ИГРЫ */
@@ -158,15 +140,19 @@
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .tool-box h1 { color: #fff; margin-bottom: 20px; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-        /* СТИЛИ КЛИКЕРА / ФАРМИЛКИ */
+        /* СТИЛИ КЛИКЕРА / ФАРМИЛКИ / ШАХТЫ */
         .clicker-area { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
         .gamepad-icon { font-size: 160px; cursor: pointer; user-select: none; transition: filter 0.2s, transform 0.2s; filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.7)); }
         .gamepad-icon:hover { filter: drop-shadow(0 0 50px rgba(233, 69, 96, 1)); transform: scale(1.05); }
         .score-display { font-size: 52px; font-weight: 800; color: #00ffcc; text-shadow: 0 0 20px rgba(0,255,204,0.8); }
-
-        /* СТИЛИ ДЛЯ КАЗИНО */
-        #tool-casino { max-width: 700px; padding-top: 20px; }
         
+        /* Специфичные стили для шахты */
+        .mine-icon { font-size: 160px; cursor: pointer; user-select: none; transition: filter 0.2s, transform 0.2s; filter: drop-shadow(0 0 30px rgba(160, 174, 192, 0.7)); }
+        .mine-icon:hover { filter: drop-shadow(0 0 50px rgba(160, 174, 192, 1)); transform: scale(1.05); }
+        .coal-display { font-size: 36px; font-weight: 800; color: #a0aec0; text-shadow: 0 0 15px rgba(160,174,192,0.6); margin-bottom: 20px;}
+
+        /* КАЗИНО */
+        #tool-casino { max-width: 700px; padding-top: 20px; }
         .casino-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
         .casino-tab-btn { 
             background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-bottom: 3px solid rgba(255,255,255,0.1);
@@ -175,19 +161,14 @@
         }
         .casino-tab-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .casino-tab-btn.active { 
-            background: linear-gradient(180deg, #ff4d6d 0%, #e94560 100%); 
-            color: #fff; 
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4); 
-            border-color: rgba(255,255,255,0.2); 
-            border-bottom: 3px solid #b8203d;
-            transform: translateY(-2px);
+            background: linear-gradient(180deg, #ff4d6d 0%, #e94560 100%); color: #fff; 
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4); border-color: rgba(255,255,255,0.2); 
+            border-bottom: 3px solid #b8203d; transform: translateY(-2px);
         }
-
         .casino-tab-content { display: none; animation: fadeIn 0.4s ease; }
         .casino-tab-content.active { display: block; }
 
         .casino-section { background: rgba(0,0,0,0.25); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); }
-        
         .bet-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
         .bet-btn { 
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-bottom: 3px solid rgba(255,255,255,0.15); 
@@ -230,10 +211,8 @@
         .shop-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 5px; }
         .shop-desc { font-size: 13px; color: #a0aec0; }
         .shop-buy-btn { 
-            background: linear-gradient(180deg, #00ffcc, #00b894); 
-            color: #000; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-bottom: 4px solid #008f68;
+            background: linear-gradient(180deg, #00ffcc, #00b894); color: #000; 
+            border: 1px solid rgba(255,255,255,0.3); border-bottom: 4px solid #008f68;
             padding: 12px 25px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 15px;
             box-shadow: 0 4px 15px rgba(0,255,204,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
         }
@@ -243,7 +222,7 @@
         .shop-buy-btn.equipped { background: linear-gradient(180deg, #ff4d6d, #e94560); color: #fff; cursor: default; box-shadow: 0 4px 15px rgba(233,69,96,0.3); border-bottom-color: #b8203d;}
         .frame-preview { width: 50px; height: 50px; border-radius: 50%; background: #111827; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 20px; }
 
-        /* ЧАТ */
+        /* ЧАТ И ДРУЗЬЯ */
         .chat-container { display: flex; flex-direction: column; height: 450px; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
         .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .chat-msg { display: flex; gap: 15px; align-items: flex-end; max-width: 80%; }
@@ -260,7 +239,6 @@
         .chat-send-btn { background: #e94560; border: none; color: #fff; padding: 0 25px; border-radius: 0 12px 12px 0; cursor: pointer; font-size: 20px; transition: 0.2s; }
         .chat-send-btn:hover { background: #ff2e55; }
 
-        /* ДРУЗЬЯ */
         .friends-layout { display: flex; gap: 25px; height: 450px; text-align: left; }
         .friends-sidebar { width: 280px; display: flex; flex-direction: column; gap: 15px; }
         .add-friend-box { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; }
@@ -282,7 +260,7 @@
         .dm-header { padding: 20px; background: rgba(30, 27, 75, 0.8); border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; display: flex; align-items: center; gap: 15px; font-size: 18px;}
         .dm-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
 
-        /* Остальные */
+        /* ЗАЛ СЛАВЫ И ПРОФИЛЬ */
         .users-list { list-style: none; text-align: left; max-height: 380px; overflow-y: auto; }
         .user-item { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;}
         .user-item:hover { background: rgba(255,255,255,0.06); transform: translateX(5px);}
@@ -295,6 +273,7 @@
         .user-nick-list { font-size: 18px; font-weight: 600; display: flex; align-items: center;}
         .user-email-list { font-size: 12px; color: #a0aec0; }
         .user-score { background: rgba(255, 215, 0, 0.1); color: #ffd700; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 16px; border: 1px solid rgba(255, 215, 0, 0.3); }
+        
         .avatar-picker { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin: 25px 0; }
         .avatar-option { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
         .avatar-option:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
@@ -303,6 +282,7 @@
         .my-frame-item { width: 70px; height: 70px; border-radius: 50%; background: #111827; display: flex; align-items: center; justify-content: center; font-size: 34px; cursor: pointer; transition: 0.2s;}
         .my-frame-item:hover { transform: scale(1.1); }
         .my-frame-item.active { border: 4px solid #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.5);}
+        
         .loader { border: 4px solid rgba(255,255,255,0.05); border-left-color: #00ffcc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
@@ -314,6 +294,8 @@
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
 
     <div id="authScreen" class="login-screen">
         <div class="login-box">
@@ -336,6 +318,7 @@
             <h2>SOM I chai</h2>
             <button class="nav-btn active" onclick="showTool('tool-clicker', this)">🎮 Кликер</button>
             <button class="nav-btn" onclick="showTool('tool-earn', this)">⛏️ Фармилка</button>
+            <button class="nav-btn" onclick="showTool('tool-mine', this); updateUI()">🪨 Шахта</button>
             <button class="nav-btn" onclick="showTool('tool-casino', this)">🎲 Казино</button>
             <button class="nav-btn" onclick="showTool('tool-shop', this); loadShop()">🛒 Магазин</button>
             
@@ -376,6 +359,21 @@
                 <div class="clicker-area" id="earnArea">
                     <div class="gamepad-icon" id="earnBtn" onclick="handleEarnClick(event)">💰</div>
                 </div>
+            </div>
+
+            <!-- НОВАЯ ВКЛАДКА ШАХТА -->
+            <div id="tool-mine" class="tool-box">
+                <h1>🪨 Шахта</h1>
+                <p style="color: #a0aec0; font-size: 15px; margin-bottom: 15px;">Бей уголь, чтобы потом продать его!</p>
+                
+                <div class="coal-display">Уголь: <span id="coalCount">0</span> 🪨</div>
+                
+                <div class="clicker-area" id="mineArea">
+                    <div class="mine-icon" id="mineBtn" onclick="handleMineClick(event)">🪨</div>
+                    <div style="color: #a0aec0; font-size: 15px; margin-bottom: 5px; margin-top: 20px;">Добыча за удар: <span id="coalPerClick">1</span> шт.</div>
+                </div>
+
+                <button class="action-btn" style="background: linear-gradient(180deg, #00ffcc, #00b894); color: #000; border-color: rgba(255,255,255,0.3); border-bottom: 4px solid #008f68; box-shadow: 0 4px 15px rgba(0,255,204,0.3); text-shadow: none; margin-top: 25px;" onclick="sellCoal()">Продать весь уголь</button>
             </div>
 
             <div id="tool-casino" class="tool-box">
@@ -456,6 +454,18 @@
                         <button class="shop-buy-btn" id="buyAutoBtn" onclick="buyUpgrade('auto')">250 KLZ</button>
                     </div>
                 </div>
+
+                <div class="shop-section-title">Улучшения Шахты</div>
+                <div class="shop-list">
+                    <div class="shop-item">
+                        <div class="shop-info">
+                            <div class="shop-title">⛏️ Кирка (Ур. <span id="pickaxeLevel">1</span>)</div>
+                            <div class="shop-desc">Дает +1 уголь за удар.</div>
+                        </div>
+                        <button class="shop-buy-btn" id="buyPickaxeBtn" onclick="buyPickaxe()">150 KLZ</button>
+                    </div>
+                </div>
+
                 <div class="shop-section-title">Рамки для Аватарки</div>
                 <div class="shop-list" id="frameShopList"></div>
             </div>
@@ -535,11 +545,29 @@
         const db = getFirestore(app);
         const CREATOR_EMAIL = "faceitdsds@yandex.ru"; 
 
+        // --- КРАСИВЫЕ УВЕДОМЛЕНИЯ ---
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            let icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️');
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
         let currentUser = null;
         let userData = { nickname: "Игрок", avatar: "😎", customAvatarUrl: "", frame: "none", unlockedFrames: ["none"], friends: [], requests: [] }; 
         
         let totalClicks = 0, klz = 0;
         let clickPower = 1, autoClickers = 0, powerCost = 100, autoCost = 250;
+        
+        // Переменные для Шахты
+        let coal = 0, pickaxeLevel = 1, pickaxeCost = 150;
+
         let saveTimeout = null, autoClickInterval = null;
         
         let chatUnsubscribe = null; 
@@ -580,6 +608,7 @@
         window.playDrawSound = () => playTone(400, 'square', 0.2, 0.05);
         window.playGamepadSound = () => playTone(800, 'square', 0.05, 0.03);
         window.playCardSound = () => playTone(300, 'sine', 0.1, 0.1);
+        window.playMineSound = () => playTone(150, 'sawtooth', 0.15, 0.1); // Звук удара
 
         let isLoginMode = true;
         window.toggleAuth = function() {
@@ -595,7 +624,7 @@
             const password = document.getElementById("passwordInput").value;
             const errorMsg = document.getElementById("errorMsg");
             errorMsg.innerText = "";
-            if(!email || !password) { errorMsg.innerText = "Заполни все поля!"; return; }
+            if(!email || !password) { showToast("Заполни все поля!", "error"); return; }
 
             try {
                 if (isLoginMode) await signInWithEmailAndPassword(auth, email, password);
@@ -639,6 +668,9 @@
                     totalClicks = data.clicks || 0; klz = data.klz || 0; 
                     clickPower = data.clickPower || 1; autoClickers = data.autoClickers || 0; powerCost = data.powerCost || 100; autoCost = data.autoCost || 250;
                     
+                    // Загрузка данных шахты
+                    coal = data.coal || 0; pickaxeLevel = data.pickaxeLevel || 1; pickaxeCost = data.pickaxeCost || 150;
+
                     if (user.email === CREATOR_EMAIL && klz > 500) {
                         klz = 500; await setDoc(docRef, { klz: klz }, { merge: true });
                     }
@@ -650,7 +682,8 @@
                 } else {
                     await setDoc(docRef, { 
                         email: user.email, nickname: "Игрок_" + Math.floor(Math.random() * 1000), avatar: "😎", customAvatarUrl: "",
-                        clicks: 0, klz: user.email === CREATOR_EMAIL ? 500 : 0, clickPower: 1, autoClickers: 0, powerCost: 100, autoCost: 250, createdAt: Date.now(),
+                        clicks: 0, klz: user.email === CREATOR_EMAIL ? 500 : 0, clickPower: 1, autoClickers: 0, powerCost: 100, autoCost: 250, 
+                        coal: 0, pickaxeLevel: 1, pickaxeCost: 150, createdAt: Date.now(),
                         frame: "none", unlockedFrames: ["none"], friends: [], requests: []
                     }, { merge: true });
                     klz = user.email === CREATOR_EMAIL ? 500 : 0;
@@ -687,6 +720,10 @@
             document.getElementById("klzAmountTop").innerText = formatKlz(klz);
             document.getElementById("clickPowerDisplay").innerText = clickPower;
             document.getElementById("clickScore").innerText = totalClicks;
+            
+            // Обновляем шахту
+            document.getElementById("coalCount").innerText = coal;
+            document.getElementById("coalPerClick").innerText = pickaxeLevel;
         }
 
         function saveGameData() {
@@ -695,12 +732,14 @@
             saveTimeout = setTimeout(async () => {
                 try {
                     await setDoc(doc(db, "users", currentUser.uid), { 
-                        clicks: totalClicks, klz: klz, clickPower: clickPower, autoClickers: autoClickers, powerCost: powerCost, autoCost: autoCost
+                        clicks: totalClicks, klz: klz, clickPower: clickPower, autoClickers: autoClickers, powerCost: powerCost, autoCost: autoCost,
+                        coal: coal, pickaxeLevel: pickaxeLevel, pickaxeCost: pickaxeCost
                     }, { merge: true });
                 } catch (e) { console.error(e); }
             }, 2000);
         }
 
+        // --- ЛОГИКА КЛИКЕРОВ ---
         window.handleGamepadClick = function(event) {
             if (!currentUser) return;
             totalClicks += clickPower;
@@ -727,6 +766,31 @@
             updateUI(); saveGameData();
         };
 
+        // --- ЛОГИКА ШАХТЫ ---
+        window.handleMineClick = function(event) {
+            if (!currentUser) return;
+            coal += pickaxeLevel;
+            playMineSound();
+            const btn = document.getElementById("mineBtn");
+            btn.classList.remove("gamepad-clicked"); void btn.offsetWidth; btn.classList.add("gamepad-clicked");
+            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#a0aec0"; floatingPlus.innerText = `+${pickaxeLevel} 🪨`;
+            const rect = document.getElementById("mineArea").getBoundingClientRect();
+            floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
+            document.getElementById("mineArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
+            updateUI(); saveGameData();
+        };
+
+        window.sellCoal = function() {
+            if (coal <= 0) { showToast("У тебя нет угля для продажи!", "error"); return; }
+            let earned = coal; 
+            klz += earned;
+            coal = 0;
+            playWinSound(); 
+            showToast(`Ты продал уголь и получил ${earned} KLZ!`, "success");
+            updateUI(); saveGameData();
+        };
+
+        // --- КАЗИНО ---
         window.setBet = function(game, amount, btn) {
             if (game === 'rps') {
                 rpsBet = amount; document.querySelectorAll('#rpsBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
@@ -739,7 +803,7 @@
 
         window.playCasinoRPS = function(playerChoice) {
             if (!currentUser) return;
-            if (klz < rpsBet) { alert("Недостаточно KLZ для ставки!"); return; }
+            if (klz < rpsBet) { showToast("Недостаточно KLZ для ставки!", "error"); return; }
             const options = ['Камень', 'Ножницы', 'Бумага'];
             const computerChoice = options[Math.floor(Math.random() * options.length)];
             const resultBox = document.getElementById("rpsResult");
@@ -804,7 +868,7 @@
         }
 
         window.startBlackjack = function() {
-            if (klz < bjBet) { alert("Недостаточно KLZ для ставки!"); return; }
+            if (klz < bjBet) { showToast("Недостаточно KLZ для ставки!", "error"); return; }
             playCardSound();
             klz -= bjBet; klz = Number(klz.toFixed(2));
             updateUI(); saveGameData();
@@ -864,11 +928,19 @@
             document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = false);
         }
 
+        // --- МАГАЗИН ---
         window.loadShop = function() {
             document.getElementById("powerLevel").innerText = clickPower;
             document.getElementById("autoLevel").innerText = autoClickers;
             const pBtn = document.getElementById("buyPowerBtn"); pBtn.innerText = `${powerCost} KLZ`; pBtn.disabled = klz < powerCost;
             const aBtn = document.getElementById("buyAutoBtn"); aBtn.innerText = `${autoCost} KLZ`; aBtn.disabled = klz < autoCost;
+            
+            // Кирка
+            document.getElementById("pickaxeLevel").innerText = pickaxeLevel;
+            const pickBtn = document.getElementById("buyPickaxeBtn"); 
+            pickBtn.innerText = `${pickaxeCost} KLZ`; 
+            pickBtn.disabled = klz < pickaxeCost;
+
             const frameList = document.getElementById("frameShopList"); frameList.innerHTML = "";
             SHOP_FRAMES.forEach(frame => {
                 const isUnlocked = userData.unlockedFrames.includes(frame.id);
@@ -887,6 +959,17 @@
             if (type === 'power' && klz >= powerCost) { klz -= powerCost; clickPower++; powerCost = Math.floor(powerCost * 1.8); playWinSound(); } 
             else if (type === 'auto' && klz >= autoCost) { klz -= autoCost; autoClickers++; autoCost = Math.floor(autoCost * 2.2); startAutoClicker(); playWinSound(); }
             updateUI(); loadShop(); saveGameData();
+        };
+
+        window.buyPickaxe = function() {
+            if (klz >= pickaxeCost) {
+                klz -= pickaxeCost;
+                pickaxeLevel++;
+                pickaxeCost = Math.floor(pickaxeCost * 1.5);
+                playWinSound();
+                showToast("Кирка улучшена!", "success");
+                updateUI(); loadShop(); saveGameData();
+            }
         };
 
         window.buyFrame = async function(id, price) {
@@ -913,6 +996,7 @@
             }, 1000);
         }
 
+        // --- ПРОФИЛЬ ---
         const availableAvatars = ["😎", "🐉", "👽", "🔥", "🦊", "🤖", "💀", "🍕", "🥷", "👑", "🐺", "🧙‍♂️"];
         const picker = document.getElementById("avatarPicker");
         availableAvatars.forEach(emoji => {
@@ -949,13 +1033,14 @@
             if (!currentUser) return;
             const newNickname = document.getElementById("nicknameInput").value.trim();
             const newUrl = document.getElementById("customAvatarInput").value.trim();
-            if (newNickname === "") { alert("Никнейм не может быть пустым!"); return; }
+            if (newNickname === "") { showToast("Никнейм не может быть пустым!", "error"); return; }
             await setDoc(doc(db, "users", currentUser.uid), { nickname: newNickname, avatar: userData.avatar, customAvatarUrl: newUrl }, { merge: true });
             userData.nickname = newNickname; userData.customAvatarUrl = newUrl;
             document.getElementById("sideNick").innerText = newNickname; setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, newUrl, userData.frame);
-            playWinSound(); alert("Профиль сохранен!"); loadMyProfile();
+            playWinSound(); showToast("Профиль успешно сохранен!", "success"); loadMyProfile();
         };
 
+        // --- ДРУЗЬЯ ---
         function listenToFriendsAndRequests() {
             if (friendsUnsubscribe) friendsUnsubscribe();
             friendsUnsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
@@ -970,16 +1055,16 @@
 
         window.sendFriendRequest = async function() {
             const targetEmail = document.getElementById("friendEmailInput").value.trim();
-            if (!targetEmail) { alert("Введи email!"); return; }
-            if (targetEmail === currentUser.email) { alert("Это твой email!"); return; }
+            if (!targetEmail) { showToast("Введи email друга!", "error"); return; }
+            if (targetEmail === currentUser.email) { showToast("Это твой email!", "error"); return; }
             const q = query(collection(db, "users"), where("email", "==", targetEmail));
             const snapshot = await getDocs(q);
-            if (snapshot.empty) { alert("Пользователь с таким email не найден."); return; }
+            if (snapshot.empty) { showToast("Пользователь с таким email не найден.", "error"); return; }
             const targetDoc = snapshot.docs[0]; const targetData = targetDoc.data(); const targetUid = targetDoc.id;
-            if (userData.friends.includes(targetUid)) { alert("Вы уже друзья!"); return; }
-            if (targetData.requests && targetData.requests.includes(currentUser.uid)) { alert("Заявка уже отправлена!"); return; }
+            if (userData.friends.includes(targetUid)) { showToast("Вы уже друзья!", "error"); return; }
+            if (targetData.requests && targetData.requests.includes(currentUser.uid)) { showToast("Заявка уже отправлена!", "error"); return; }
             await updateDoc(doc(db, "users", targetUid), { requests: arrayUnion(currentUser.uid) });
-            playWinSound(); alert(`Заявка отправлена пользователю ${targetData.nickname}!`);
+            playWinSound(); showToast(`Заявка отправлена пользователю ${targetData.nickname}!`, "success");
             document.getElementById("friendEmailInput").value = "";
         };
 
@@ -1082,7 +1167,7 @@
             if (!currentUser || !currentDMFriend) return;
             const input = document.getElementById("dmInput"); const text = input.value.trim();
             if (text === "") return;
-            const now = Date.now(); if (now - lastDmTime < 1000) { alert("Не так быстро!"); return; }
+            const now = Date.now(); if (now - lastDmTime < 1000) { showToast("Не так быстро!", "error"); return; }
             input.value = ""; lastDmTime = now;
             const chatId = [currentUser.uid, currentDMFriend].sort().join('_');
             try {
@@ -1120,7 +1205,7 @@
             if (!currentUser) return;
             const input = document.getElementById("chatInput"); const text = input.value.trim();
             if (text === "") return;
-            const now = Date.now(); if (now - lastMessageTime < 2000) { alert("Не так быстро!"); return; }
+            const now = Date.now(); if (now - lastMessageTime < 2000) { showToast("Не так быстро!", "error"); return; }
             input.value = ""; lastMessageTime = now;
             try {
                 await addDoc(collection(db, "messages"), {
