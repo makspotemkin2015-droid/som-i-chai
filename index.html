@@ -221,23 +221,70 @@
         .shop-buy-btn.equipped { background: linear-gradient(180deg, #ff4d6d, #e94560); color: #fff; cursor: default; box-shadow: 0 4px 15px rgba(233,69,96,0.3); border-bottom-color: #b8203d;}
         .frame-preview { width: 50px; height: 50px; border-radius: 50%; background: #111827; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 20px; }
 
-        /* ЧАТ И ДРУЗЬЯ */
-        .chat-container { display: flex; flex-direction: column; height: 450px; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
-        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .chat-msg { display: flex; gap: 15px; align-items: flex-end; max-width: 80%; }
+        /* ========================================= */
+        /* --- ОБНОВЛЕННЫЙ ГЛОБАЛЬНЫЙ ЧАТ --- */
+        /* ========================================= */
+        #tool-chat { max-width: 900px; padding-top: 20px; }
+        
+        .chat-header-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: linear-gradient(90deg, rgba(233,69,96,0.2), rgba(0,255,204,0.1));
+            border: 1px solid rgba(233,69,96,0.3);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(233,69,96,0.2);
+        }
+        .chat-header-panel h2 { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5); margin: 0;}
+        .chat-header-panel p { color: #a0aec0; font-size: 14px; margin: 0;}
+
+        .chat-container { 
+            display: flex; flex-direction: column; 
+            height: calc(100vh - 280px); /* Занимает почти весь экран */
+            min-height: 500px;
+            background: rgba(0,0,0,0.4); 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        }
+        .chat-messages { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .chat-msg { display: flex; gap: 15px; align-items: flex-end; max-width: 85%; }
         .chat-msg.own { align-self: flex-end; flex-direction: row-reverse; }
-        .chat-avatar { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 20px; flex-shrink: 0; }
+        .chat-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 22px; flex-shrink: 0; }
         .chat-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         .chat-bubble-wrapper { display: flex; flex-direction: column; }
-        .chat-name { font-size: 12px; color: #8899a6; margin-bottom: 5px; margin-left: 5px; }
+        .chat-name { font-size: 13px; color: #a0aec0; margin-bottom: 6px; margin-left: 5px; font-weight: 600;}
         .chat-msg.own .chat-name { text-align: right; margin-right: 5px; margin-left: 0; }
-        .chat-bubble { background: #1e1b4b; padding: 12px 18px; border-radius: 18px; border-bottom-left-radius: 5px; font-size: 15px; color: #fff; word-break: break-word; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .chat-msg.own .chat-bubble { background: linear-gradient(90deg, #e94560, #ff2e55); border-bottom-left-radius: 18px; border-bottom-right-radius: 5px; text-align: left; }
-        .chat-input-area { display: flex; padding: 15px; background: rgba(30, 27, 75, 0.8); border-top: 1px solid rgba(255,255,255,0.05); }
-        .chat-input-area input { margin: 0; border-radius: 12px 0 0 12px; border-right: none; padding: 15px; font-size: 15px;}
-        .chat-send-btn { background: #e94560; border: none; color: #fff; padding: 0 25px; border-radius: 0 12px 12px 0; cursor: pointer; font-size: 20px; transition: 0.2s; }
-        .chat-send-btn:hover { background: #ff2e55; }
+        
+        .chat-bubble { 
+            background: #1e1b4b; 
+            padding: 15px 20px; 
+            border-radius: 20px; 
+            border-bottom-left-radius: 5px; 
+            font-size: 16px; 
+            color: #fff; 
+            word-break: break-word; 
+            text-align: left; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+        }
+        .chat-msg.own .chat-bubble { 
+            background: linear-gradient(135deg, #e94560, #ff2e55); 
+            border-bottom-left-radius: 20px; 
+            border-bottom-right-radius: 5px; 
+            text-align: left; 
+            box-shadow: 0 5px 15px rgba(233,69,96,0.3);
+        }
+        
+        .chat-input-area { display: flex; padding: 20px; background: rgba(30, 27, 75, 0.9); border-top: 1px solid rgba(255,255,255,0.08); }
+        .chat-input-area input { margin: 0; border-radius: 15px 0 0 15px; border-right: none; padding: 18px; font-size: 16px; background: rgba(0,0,0,0.5);}
+        .chat-send-btn { background: #e94560; border: none; color: #fff; padding: 0 35px; border-radius: 0 15px 15px 0; cursor: pointer; font-size: 24px; transition: 0.2s; }
+        .chat-send-btn:hover { background: #ff2e55; box-shadow: 0 0 20px rgba(233,69,96,0.5); }
 
+        /* ДРУЗЬЯ */
         .friends-layout { display: flex; gap: 25px; height: 450px; text-align: left; }
         .friends-sidebar { width: 280px; display: flex; flex-direction: column; gap: 15px; }
         .add-friend-box { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; }
@@ -289,6 +336,9 @@
             .top-right-balance { top: 15px; right: 15px; font-size: 20px; padding: 10px 20px; }
             .content { padding-top: 80px; }
             .casino-tabs { flex-direction: column; }
+            .chat-container { height: calc(100vh - 250px); }
+            .chat-header-panel h2 { font-size: 18px; }
+            .chat-header-panel p { display: none; }
         }
     </style>
 </head>
@@ -485,12 +535,18 @@
                 </div>
             </div>
 
+            <!-- ОБНОВЛЕННЫЙ ГЛОБАЛЬНЫЙ ЧАТ -->
             <div id="tool-chat" class="tool-box">
-                <h1>💬 Глобальный Чат</h1>
+                <div class="chat-header-panel">
+                    <div>
+                        <h2>💬 Глобальный Чат</h2>
+                        <p>Общайся со всеми игроками SOM I chai в реальном времени!</p>
+                    </div>
+                </div>
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="Напиши сообщение..." maxlength="100" onkeypress="handleChatEnter(event)">
+                        <input type="text" id="chatInput" placeholder="Напиши сообщение всем..." maxlength="100" onkeypress="handleChatEnter(event)">
                         <button class="chat-send-btn" onclick="sendMessage()">➤</button>
                     </div>
                 </div>
@@ -789,7 +845,6 @@
             }, 100);
         };
 
-        // --- УЛУЧШЕННЫЙ БЛЭКДЖЕК ---
         function createBjDeck() {
             const suits = ['♠️', '♥️', '♦️', '♣️'];
             const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -812,7 +867,6 @@
             return score;
         }
 
-        // Проверка на "мягкие 17" (Туз + 6)
         function isSoft17(hand) {
             let score = calculateHand(hand);
             if (score !== 17) return false;
@@ -866,14 +920,12 @@
 
             renderBjCards();
 
-            // Проверка на Блэкджек у игрока
             if (calculateHand(bjPlayerHand) === 21) {
                 bjPlayerNatural = true;
-                bjStand(); // Игрок с блэкджеком сразу останавливается
+                bjStand();
                 return;
             }
 
-            // Дилер проверяет свой блэкджек, если у него Туз или 10
             let dealerVisible = bjDealerHand[0].value;
             if (dealerVisible === 'A' || getCardValue(bjDealerHand[0]) === 10) {
                 if (calculateHand(bjDealerHand) === 21) {
@@ -906,7 +958,6 @@
             if (!bjGameActive) return;
             bjGameActive = false;
             
-            // Дилер добирает карты: до 17 очков, и даже на "мягкие 17" (Туз + 6)
             while (calculateHand(bjDealerHand) < 17 || isSoft17(bjDealerHand)) {
                 bjDealerHand.push(bjDeck.pop());
             }
@@ -925,7 +976,6 @@
             } else if (playerScore > dealerScore) { 
                 resultBox.innerText = "Ты победил! 🎉"; 
                 resultBox.style.color = "#00ff66"; 
-                // Если у игрока был Natural Blackjack (21 с двух карт), платим 3 к 1 (возврат ставки + x2)
                 if (bjPlayerNatural) {
                     klz += (bjBet * 3);
                     resultBox.innerText = "БЛЭКДЖЕК! Ты победил! 🎉 (Выплата x3)";
