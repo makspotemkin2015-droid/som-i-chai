@@ -467,7 +467,7 @@
                 
                 <div class="clicker-area" id="mineArea">
                     <div class="mine-icon" id="mineBtn" onclick="handleMineClick(event)">🪨</div>
-                    <div style="color: #a0aec0; font-size: 15px; margin-bottom: 5px; margin-top: 20px;">Добыча за удар: <span id="coalPerClick">1</span> шт.</div>
+                    <div style="color: #a0aec0; font-size: 15px; margin-bottom: 5px; margin-top: 20px;">Добыча за удар: 1 шт.</div>
                 </div>
 
                 <button class="action-btn" style="background: linear-gradient(180deg, #00ffcc, #00b894); color: #000; border-color: rgba(255,255,255,0.3); border-bottom: 4px solid #008f68; box-shadow: 0 4px 15px rgba(0,255,204,0.3); text-shadow: none; margin-top: 25px;" onclick="sellCoal()">Продать весь уголь</button>
@@ -556,17 +556,6 @@
                             <div class="shop-desc">Делает 1 клик в секунду.</div>
                         </div>
                         <button class="shop-buy-btn" id="buyAutoBtn" onclick="buyUpgrade('auto')">250 KLZ</button>
-                    </div>
-                </div>
-
-                <div class="shop-section-title">Улучшения Шахты</div>
-                <div class="shop-list">
-                    <div class="shop-item">
-                        <div class="shop-info">
-                            <div class="shop-title">⛏️ Кирка (Ур. <span id="pickaxeLevel">1</span>)</div>
-                            <div class="shop-desc">Дает +1 уголь за удар.</div>
-                        </div>
-                        <button class="shop-buy-btn" id="buyPickaxeBtn" onclick="buyPickaxe()">150 KLZ</button>
                     </div>
                 </div>
 
@@ -681,7 +670,7 @@
         
         let totalClicks = 0, klz = 0;
         let clickPower = 1, autoClickers = 0, powerCost = 100, autoCost = 250;
-        let coal = 0, pickaxeLevel = 1, pickaxeCost = 150;
+        let coal = 0;
 
         let saveTimeout = null, autoClickInterval = null;
         
@@ -807,7 +796,7 @@
                     
                     totalClicks = data.clicks || 0; klz = data.klz || 0; 
                     clickPower = data.clickPower || 1; autoClickers = data.autoClickers || 0; powerCost = data.powerCost || 100; autoCost = data.autoCost || 250;
-                    coal = data.coal || 0; pickaxeLevel = data.pickaxeLevel || 1; pickaxeCost = data.pickaxeCost || 150;
+                    coal = data.coal || 0;
 
                     setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, userData.customAvatarUrl, userData.frame);
                     document.getElementById("sideNick").innerText = userData.nickname;
@@ -821,7 +810,7 @@
                     await setDoc(docRef, { 
                         email: user.email, nickname: "Игрок_" + Math.floor(Math.random() * 1000), avatar: "😎", customAvatarUrl: "",
                         clicks: 0, klz: user.email === CREATOR_EMAIL ? 500 : 0, clickPower: 1, autoClickers: 0, powerCost: 100, autoCost: 250, 
-                        coal: 0, pickaxeLevel: 1, pickaxeCost: 150, createdAt: Date.now(),
+                        coal: 0, createdAt: Date.now(),
                         frame: "none", unlockedFrames: ["none"], unlockedPrefixes: [], activePrefix: "none", friends: [], requests: []
                     }, { merge: true });
                     klz = user.email === CREATOR_EMAIL ? 500 : 0;
@@ -861,7 +850,6 @@
             document.getElementById("clickScore").innerText = totalClicks;
             
             document.getElementById("coalCount").innerText = coal;
-            document.getElementById("coalPerClick").innerText = pickaxeLevel;
             
             if (currentUser) {
                 document.getElementById("sideBadge").innerHTML = getPrefixHtml(userData.activePrefix, currentUser.email);
@@ -875,7 +863,7 @@
                 try {
                     await setDoc(doc(db, "users", currentUser.uid), { 
                         clicks: totalClicks, klz: klz, clickPower: clickPower, autoClickers: autoClickers, powerCost: powerCost, autoCost: autoCost,
-                        coal: coal, pickaxeLevel: pickaxeLevel, pickaxeCost: pickaxeCost
+                        coal: coal
                     }, { merge: true });
                 } catch (e) { console.error(e); }
             }, 2000);
@@ -896,11 +884,11 @@
 
         window.handleMineClick = function(event) {
             if (!currentUser) return;
-            coal += pickaxeLevel;
+            coal += 1; // Теперь всегда 1 уголь
             playMineSound();
             const btn = document.getElementById("mineBtn");
             btn.classList.remove("gamepad-clicked"); void btn.offsetWidth; btn.classList.add("gamepad-clicked");
-            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#a0aec0"; floatingPlus.innerText = `+${pickaxeLevel} 🪨`;
+            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#a0aec0"; floatingPlus.innerText = `+1 🪨`;
             const rect = document.getElementById("mineArea").getBoundingClientRect();
             floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
             document.getElementById("mineArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
@@ -1175,11 +1163,6 @@
             document.getElementById("autoLevel").innerText = autoClickers;
             const pBtn = document.getElementById("buyPowerBtn"); pBtn.innerText = `${powerCost} KLZ`; pBtn.disabled = klz < powerCost;
             const aBtn = document.getElementById("buyAutoBtn"); aBtn.innerText = `${autoCost} KLZ`; aBtn.disabled = klz < autoCost;
-            
-            document.getElementById("pickaxeLevel").innerText = pickaxeLevel;
-            const pickBtn = document.getElementById("buyPickaxeBtn"); 
-            pickBtn.innerText = `${pickaxeCost} KLZ`; 
-            pickBtn.disabled = klz < pickaxeCost;
 
             const frameList = document.getElementById("frameShopList"); frameList.innerHTML = "";
             SHOP_FRAMES.forEach(frame => {
@@ -1213,17 +1196,6 @@
             if (type === 'power' && klz >= powerCost) { klz -= powerCost; clickPower++; powerCost = Math.floor(powerCost * 1.8); playWinSound(); } 
             else if (type === 'auto' && klz >= autoCost) { klz -= autoCost; autoClickers++; autoCost = Math.floor(autoCost * 2.2); startAutoClicker(); playWinSound(); }
             updateUI(); loadShop(); saveGameData();
-        };
-
-        window.buyPickaxe = function() {
-            if (klz >= pickaxeCost) {
-                klz -= pickaxeCost;
-                pickaxeLevel++;
-                pickaxeCost = Math.floor(pickaxeCost * 1.5);
-                playWinSound();
-                showToast("Кирка улучшена!", "success");
-                updateUI(); loadShop(); saveGameData();
-            }
         };
 
         window.buyFrame = async function(id, price) {
