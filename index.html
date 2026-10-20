@@ -6,7 +6,7 @@
     
     <title>SOM I chai | Соцсеть, Казино и Игры</title>
     <meta name="description" content="SOM I chai - новая соцсеть! Тут есть общение, казино и наша валюта. Хочешь выделятся? Купи крутую рамку для аватарки и общайся как крутой челик!">
-    <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, игры, блэкджек">
+    <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, шахта, блэкджек">
     <meta name="google-site-verification" content="jjsBjLwajw9ldAsux1UKeNJYY0lkkiV6yw-BRXIpgaw" />
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -140,13 +140,12 @@
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .tool-box h1 { color: #fff; margin-bottom: 20px; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-        /* СТИЛИ КЛИКЕРА / ФАРМИЛКИ / ШАХТЫ */
+        /* СТИЛИ КЛИКЕРА / ШАХТЫ */
         .clicker-area { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
         .gamepad-icon { font-size: 160px; cursor: pointer; user-select: none; transition: filter 0.2s, transform 0.2s; filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.7)); }
         .gamepad-icon:hover { filter: drop-shadow(0 0 50px rgba(233, 69, 96, 1)); transform: scale(1.05); }
         .score-display { font-size: 52px; font-weight: 800; color: #00ffcc; text-shadow: 0 0 20px rgba(0,255,204,0.8); }
         
-        /* Специфичные стили для шахты */
         .mine-icon { font-size: 160px; cursor: pointer; user-select: none; transition: filter 0.2s, transform 0.2s; filter: drop-shadow(0 0 30px rgba(160, 174, 192, 0.7)); }
         .mine-icon:hover { filter: drop-shadow(0 0 50px rgba(160, 174, 192, 1)); transform: scale(1.05); }
         .coal-display { font-size: 36px; font-weight: 800; color: #a0aec0; text-shadow: 0 0 15px rgba(160,174,192,0.6); margin-bottom: 20px;}
@@ -317,7 +316,6 @@
         <div class="sidebar">
             <h2>SOM I chai</h2>
             <button class="nav-btn active" onclick="showTool('tool-clicker', this)">🎮 Кликер</button>
-            <button class="nav-btn" onclick="showTool('tool-earn', this)">⛏️ Фармилка</button>
             <button class="nav-btn" onclick="showTool('tool-mine', this); updateUI()">🪨 Шахта</button>
             <button class="nav-btn" onclick="showTool('tool-casino', this)">🎲 Казино</button>
             <button class="nav-btn" onclick="showTool('tool-shop', this); loadShop()">🛒 Магазин</button>
@@ -353,15 +351,6 @@
                 </div>
             </div>
 
-            <div id="tool-earn" class="tool-box">
-                <h1>⛏️ Фармилка</h1>
-                <p style="color: #a0aec0; font-size: 15px; margin-bottom: 15px;">Кликай по кошельку, чтобы заработать 0.01 KLZ!</p>
-                <div class="clicker-area" id="earnArea">
-                    <div class="gamepad-icon" id="earnBtn" onclick="handleEarnClick(event)">💰</div>
-                </div>
-            </div>
-
-            <!-- НОВАЯ ВКЛАДКА ШАХТА -->
             <div id="tool-mine" class="tool-box">
                 <h1>🪨 Шахта</h1>
                 <p style="color: #a0aec0; font-size: 15px; margin-bottom: 15px;">Бей уголь, чтобы потом продать его!</p>
@@ -545,7 +534,6 @@
         const db = getFirestore(app);
         const CREATOR_EMAIL = "faceitdsds@yandex.ru"; 
 
-        // --- КРАСИВЫЕ УВЕДОМЛЕНИЯ ---
         window.showToast = function(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -564,8 +552,6 @@
         
         let totalClicks = 0, klz = 0;
         let clickPower = 1, autoClickers = 0, powerCost = 100, autoCost = 250;
-        
-        // Переменные для Шахты
         let coal = 0, pickaxeLevel = 1, pickaxeCost = 150;
 
         let saveTimeout = null, autoClickInterval = null;
@@ -583,6 +569,7 @@
         let bjPlayerHand = [];
         let bjDealerHand = [];
         let bjGameActive = false;
+        let bjPlayerNatural = false;
 
         const SHOP_FRAMES = [
             { id: "gold", name: "Золотая", price: 500, desc: "Блестит как золото." },
@@ -608,7 +595,7 @@
         window.playDrawSound = () => playTone(400, 'square', 0.2, 0.05);
         window.playGamepadSound = () => playTone(800, 'square', 0.05, 0.03);
         window.playCardSound = () => playTone(300, 'sine', 0.1, 0.1);
-        window.playMineSound = () => playTone(150, 'sawtooth', 0.15, 0.1); // Звук удара
+        window.playMineSound = () => playTone(150, 'sawtooth', 0.15, 0.1);
 
         let isLoginMode = true;
         window.toggleAuth = function() {
@@ -667,8 +654,6 @@
                     
                     totalClicks = data.clicks || 0; klz = data.klz || 0; 
                     clickPower = data.clickPower || 1; autoClickers = data.autoClickers || 0; powerCost = data.powerCost || 100; autoCost = data.autoCost || 250;
-                    
-                    // Загрузка данных шахты
                     coal = data.coal || 0; pickaxeLevel = data.pickaxeLevel || 1; pickaxeCost = data.pickaxeCost || 150;
 
                     if (user.email === CREATOR_EMAIL && klz > 500) {
@@ -721,7 +706,6 @@
             document.getElementById("clickPowerDisplay").innerText = clickPower;
             document.getElementById("clickScore").innerText = totalClicks;
             
-            // Обновляем шахту
             document.getElementById("coalCount").innerText = coal;
             document.getElementById("coalPerClick").innerText = pickaxeLevel;
         }
@@ -750,19 +734,6 @@
             const rect = document.getElementById("clickerArea").getBoundingClientRect();
             floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
             document.getElementById("clickerArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
-            updateUI(); saveGameData();
-        };
-
-        window.handleEarnClick = function(event) {
-            if (!currentUser) return;
-            klz += 0.01; klz = Number(klz.toFixed(2));
-            playGamepadSound();
-            const btn = document.getElementById("earnBtn");
-            btn.classList.remove("gamepad-clicked"); void btn.offsetWidth; btn.classList.add("gamepad-clicked");
-            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#ffd700"; floatingPlus.innerText = `+0.01 KLZ`;
-            const rect = document.getElementById("earnArea").getBoundingClientRect();
-            floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
-            document.getElementById("earnArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
             updateUI(); saveGameData();
         };
 
@@ -818,6 +789,7 @@
             }, 100);
         };
 
+        // --- УЛУЧШЕННЫЙ БЛЭКДЖЕК ---
         function createBjDeck() {
             const suits = ['♠️', '♥️', '♦️', '♣️'];
             const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -838,6 +810,14 @@
             for (let card of hand) { score += getCardValue(card); if (card.value === 'A') aces++; }
             while (score > 21 && aces > 0) { score -= 10; aces--; }
             return score;
+        }
+
+        // Проверка на "мягкие 17" (Туз + 6)
+        function isSoft17(hand) {
+            let score = calculateHand(hand);
+            if (score !== 17) return false;
+            for (let card of hand) { if (card.value === 'A') return true; }
+            return false;
         }
 
         function renderBjCards() {
@@ -877,6 +857,7 @@
             bjPlayerHand = [bjDeck.pop(), bjDeck.pop()];
             bjDealerHand = [bjDeck.pop(), bjDeck.pop()];
             bjGameActive = true;
+            bjPlayerNatural = false;
 
             document.getElementById("bjResult").innerText = "";
             document.getElementById("bjStartBtn").classList.add("hidden");
@@ -884,7 +865,26 @@
             document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = true);
 
             renderBjCards();
-            if (calculateHand(bjPlayerHand) === 21) bjStand();
+
+            // Проверка на Блэкджек у игрока
+            if (calculateHand(bjPlayerHand) === 21) {
+                bjPlayerNatural = true;
+                bjStand(); // Игрок с блэкджеком сразу останавливается
+                return;
+            }
+
+            // Дилер проверяет свой блэкджек, если у него Туз или 10
+            let dealerVisible = bjDealerHand[0].value;
+            if (dealerVisible === 'A' || getCardValue(bjDealerHand[0]) === 10) {
+                if (calculateHand(bjDealerHand) === 21) {
+                    bjGameActive = false;
+                    renderBjCards();
+                    document.getElementById("bjResult").innerText = "У дилера Блэкджек! Ты проиграл. 💀";
+                    document.getElementById("bjResult").style.color = "#ff3333";
+                    playLoseSound();
+                    endBjGame();
+                }
+            }
         };
 
         window.bjHit = function() {
@@ -905,17 +905,44 @@
         window.bjStand = function() {
             if (!bjGameActive) return;
             bjGameActive = false;
-            while (calculateHand(bjDealerHand) < 17) { bjDealerHand.push(bjDeck.pop()); }
+            
+            // Дилер добирает карты: до 17 очков, и даже на "мягкие 17" (Туз + 6)
+            while (calculateHand(bjDealerHand) < 17 || isSoft17(bjDealerHand)) {
+                bjDealerHand.push(bjDeck.pop());
+            }
+            
             renderBjCards(); playCardSound();
 
             const playerScore = calculateHand(bjPlayerHand);
             const dealerScore = calculateHand(bjDealerHand);
             const resultBox = document.getElementById("bjResult");
 
-            if (dealerScore > 21) { resultBox.innerText = "У дилера перебор! Ты победил! 🎉"; resultBox.style.color = "#00ff66"; klz += (bjBet * 2); playWinSound();
-            } else if (playerScore > dealerScore) { resultBox.innerText = "Ты победил! 🎉"; resultBox.style.color = "#00ff66"; klz += (bjBet * 2); playWinSound();
-            } else if (playerScore < dealerScore) { resultBox.innerText = "Дилер победил. 💀"; resultBox.style.color = "#ff3333"; playLoseSound();
-            } else { resultBox.innerText = "Ничья! Ставка возвращается. 🤝"; resultBox.style.color = "#ffcc00"; klz += bjBet; playDrawSound(); }
+            if (dealerScore > 21) { 
+                resultBox.innerText = "У дилера перебор! Ты победил! 🎉"; 
+                resultBox.style.color = "#00ff66"; 
+                klz += (bjBet * 2); 
+                playWinSound();
+            } else if (playerScore > dealerScore) { 
+                resultBox.innerText = "Ты победил! 🎉"; 
+                resultBox.style.color = "#00ff66"; 
+                // Если у игрока был Natural Blackjack (21 с двух карт), платим 3 к 1 (возврат ставки + x2)
+                if (bjPlayerNatural) {
+                    klz += (bjBet * 3);
+                    resultBox.innerText = "БЛЭКДЖЕК! Ты победил! 🎉 (Выплата x3)";
+                } else {
+                    klz += (bjBet * 2); 
+                }
+                playWinSound();
+            } else if (playerScore < dealerScore) { 
+                resultBox.innerText = "Дилер победил. 💀"; 
+                resultBox.style.color = "#ff3333"; 
+                playLoseSound();
+            } else { 
+                resultBox.innerText = "Ничья! Ставка возвращается. 🤝"; 
+                resultBox.style.color = "#ffcc00"; 
+                klz += bjBet; 
+                playDrawSound(); 
+            }
 
             klz = Number(klz.toFixed(2));
             updateUI(); saveGameData();
@@ -935,7 +962,6 @@
             const pBtn = document.getElementById("buyPowerBtn"); pBtn.innerText = `${powerCost} KLZ`; pBtn.disabled = klz < powerCost;
             const aBtn = document.getElementById("buyAutoBtn"); aBtn.innerText = `${autoCost} KLZ`; aBtn.disabled = klz < autoCost;
             
-            // Кирка
             document.getElementById("pickaxeLevel").innerText = pickaxeLevel;
             const pickBtn = document.getElementById("buyPickaxeBtn"); 
             pickBtn.innerText = `${pickaxeCost} KLZ`; 
