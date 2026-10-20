@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- НОВОЕ НАЗВАНИЕ И ОПИСАНИЕ САЙТА -->
+    <title>SOM I chai | Соцсеть, Казино и Игры</title>
+    <meta name="description" content="SOM I chai - новая соцсеть! Тут есть общение, казино и наша валюта. Хочешь выделяться? Купи крутую рамку для аватарки и общайся как крутой челик!">
+    <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, игры, блэкджек">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        
+        /* --- КРАСИВЫЙ СКРОЛЛБАР --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(233, 69, 96, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00ffcc; }
+        * { scrollbar-width: thin; scrollbar-color: rgba(233, 69, 96, 0.5) transparent; }
+
+        body { 
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            color: #fff; display: flex; height: 100vh; overflow: hidden; 
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* --- АНИМАЦИИ --- */
+        @keyframes clickSquish { 0% { transform: scale(1); } 50% { transform: scale(0.85); filter: brightness(1.5); } 100% { transform: scale(1); } }
+        .gamepad-clicked { animation: clickSquish 0.1s ease; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
+        .floating-plus { position: absolute; font-size: 30px; font-weight: bold; pointer-events: none; animation: floatUp 0.6s ease-out forwards; }
+        @keyframes firePulse { 0% { box-shadow: 0 0 10px #ff4500, inset 0 0 10px #ff4500; } 50% { box-shadow: 0 0 25px #ff0000, inset 0 0 15px #ff0000; } 100% { box-shadow: 0 0 10px #ff4500, inset 0 0 10px #ff4500; } }
+
+        /* --- РАМКИ --- */
+        .frame-none { border: 3px solid transparent; }
+        .frame-gold { border: 3px solid #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        .frame-neon { border: 3px solid #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
+        .frame-fire { border: 3px solid #ff4500; animation: firePulse 1.5s infinite alternate; }
+        .frame-galaxy { border: 3px solid #8a2be2; box-shadow: 0 0 20px rgba(138, 43, 226, 0.8), inset 0 0 10px rgba(138, 43, 226, 0.5); background: linear-gradient(135deg, rgba(138,43,226,0.2), rgba(75,0,130,0.4)); }
+
+        /* --- ПРИПИСКА СОЗДАТЕЛЬ --- */
+        .badge-creator { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+        /* --- ЭКРАН ВХОДА --- */
+        .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 41, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { background: rgba(22, 33, 62, 0.6); backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; text-align: center; width: 380px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .login-box h2 { color: #fff; margin-bottom: 25px; font-weight: 800; text-shadow: 0 0 10px #e94560; }
+        .login-box input, .tool-box input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 15px; }
+        .login-box input:focus, .tool-box input:focus { border-color: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.5); }
+
+        /* --- КНОПКИ --- */
+        .action-btn { background: linear-gradient(90deg, #e94560, #ff2e55); color: white; border: none; padding: 15px; font-size: 16px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4); }
+        .action-btn { width: 100%; margin-top: 15px; }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6); }
+        .switch-auth { margin-top: 20px; font-size: 14px; color: #8899a6; cursor: pointer; }
+        .switch-auth:hover { color: #e94560; }
+        .hidden { display: none !important; }
+
+        /* --- ОСНОВНОЙ САЙТ --- */
+        .main-app { display: flex; width: 100%; height: 100%; position: relative; }
+        .sidebar { width: 280px; background: rgba(22, 33, 62, 0.4); backdrop-filter: blur(20px); padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); z-index: 10; overflow-y: auto;}
+        .sidebar h2 { color: #fff; text-align: center; margin-bottom: 20px; font-weight: 800; text-shadow: 0 0 15px #00ffcc; }
+        .nav-btn { background: transparent; border: none; color: #ccc; padding: 15px 20px; text-align: left; font-size: 16px; cursor: pointer; border-radius: 12px; margin-bottom: 8px; transition: 0.3s; display: flex; align-items: center; gap: 10px; position: relative;}
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; transform: translateX(5px); }
+        .nav-btn.active { background: linear-gradient(90deg, rgba(233, 69, 96, 0.8), transparent); color: #fff; font-weight: 600; border-left: 4px solid #e94560; }
+        
+        .notif-badge { position: absolute; right: 10px; top: 15px; background: #ff3333; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 51, 51, 0.5); }
+
+        .user-info { margin-top: auto; text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .side-avatar { width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; }
+        .side-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        
+        .side-nick-container { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
+        .side-nick { font-weight: 600; font-size: 16px; }
+        .side-email { font-size: 11px; color: #8899a6; word-break: break-all; margin-bottom: 5px; }
+        .logout-btn { background: transparent; color: #e94560; border: 1px solid #e94560; padding: 8px 15px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: 600; transition: 0.3s; font-size: 14px;}
+        .logout-btn:hover { background: #e94560; color: #fff; }
+        
+        .content { 
+            flex-grow: 1; 
+            padding: 80px 40px 40px 40px; 
+            display: flex; 
+            align-items: flex-start;
+            justify-content: center; 
+            overflow-y: auto; 
+            position: relative;
+        }
+        
+        /* БАЛАНС */
+        .top-right-balance { position: fixed; top: 30px; right: 40px; background: rgba(22, 33, 62, 0.8); backdrop-filter: blur(15px); padding: 12px 25px; border-radius: 20px; font-size: 26px; font-weight: 800; color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.6); border: 1px solid rgba(255, 215, 0, 0.3); z-index: 100; display: flex; align-items: center; gap: 10px; }
+
+        /* ОКНО ИГРЫ */
+        .tool-box { 
+            display: none; background: rgba(22, 33, 62, 0.6); backdrop-filter: blur(15px); 
+            padding: 30px; border-radius: 24px; width: 100%; max-width: 600px; text-align: center; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+        .tool-box.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .tool-box h1 { color: #fff; margin-bottom: 20px; font-weight: 800; }
+
+        /* СТИЛИ КЛИКЕРА / ФАРМИЛКИ */
+        .clicker-area { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
+        .gamepad-icon { font-size: 150px; cursor: pointer; user-select: none; transition: filter 0.2s; filter: drop-shadow(0 0 20px rgba(233, 69, 96, 0.6)); }
+        .gamepad-icon:hover { filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.9)); }
+        .score-display { font-size: 46px; font-weight: 800; color: #00ffcc; text-shadow: 0 0 15px rgba(0,255,204,0.6); }
+
+        /* --- СТИЛИ ДЛЯ КАЗИНО (СЕТКА) --- */
+        #tool-casino { max-width: 900px; }
+        .casino-grid { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; }
+        
+        .casino-section { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .casino-title { font-size: 20px; font-weight: 800; color: #ffd700; margin-bottom: 15px; text-align: center; }
+        
+        .bet-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .bet-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .bet-btn.active { background: #e94560; border-color: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.5); }
+        .bet-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .rps-buttons { display: flex; justify-content: space-between; gap: 10px; }
+        .rps-btn { font-size: 35px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.3s; flex: 1; }
+        .rps-btn:hover { background: rgba(255,255,255,0.15); }
+        
+        .guess-inputs { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 15px;}
+        .guess-inputs input { width: 80px; margin: 0; text-align: center; font-size: 20px; font-weight: bold; }
+        .guess-btn { background: #00ffcc; color: #000; font-weight: 800; border: none; padding: 15px 20px; border-radius: 10px; cursor: pointer; }
+
+        .cards-container { margin: 10px 0; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .hand-label { font-weight: bold; margin-bottom: 10px; font-size: 16px; color: #ccc; display: flex; justify-content: space-between; }
+        .hand-score { color: #00ffcc; font-size: 18px; }
+        .cards-row { display: flex; gap: 8px; justify-content: center; min-height: 75px; align-items: center; flex-wrap: wrap;}
+        .card { 
+            width: 50px; height: 75px; background: #fff; color: #000; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative; animation: dealCard 0.3s ease-out;
+        }
+        @keyframes dealCard { from { transform: translateY(-20px) scale(0.8); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .card.red { color: #e94560; }
+        .card.hidden { background: repeating-linear-gradient(45deg, #16213e, #16213e 5px, #0f3460 5px, #0f3460 10px); color: transparent; border: 1px solid rgba(255,255,255,0.2); }
+        .bj-controls { display: flex; gap: 10px; margin-top: 15px; }
+        .bj-controls .action-btn { margin-top: 0; padding: 15px; font-size: 15px; }
+        
+        .result-text { font-size: 18px; margin-top: 15px; min-height: 25px; font-weight: 600; text-align: center;}
+
+        @media (min-width: 850px) {
+            .casino-grid { grid-template-columns: 1fr 1fr; }
+            .casino-section.bj-section { grid-column: 1 / -1; }
+        }
+
+        /* СТИЛИ МАГАЗИНА */
+        .shop-section-title { text-align: left; font-size: 18px; color: #ffd700; margin: 20px 0 10px 0; border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding-bottom: 5px; }
+        .shop-list { display: flex; flex-direction: column; gap: 10px; }
+        .shop-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
+        .shop-info { text-align: left; }
+        .shop-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .shop-desc { font-size: 12px; color: #8899a6; }
+        .shop-buy-btn { background: linear-gradient(90deg, #00ffcc, #00b894); color: #000; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 14px;}
+        .shop-buy-btn:hover { transform: scale(1.05); }
+        .shop-buy-btn:disabled { background: rgba(255,255,255,0.1); color: #555; cursor: not-allowed; transform: none; }
+        .shop-buy-btn.equipped { background: #e94560; color: #fff; cursor: default; }
+        .frame-preview { width: 40px; height: 40px; border-radius: 50%; background: #2a2a2a; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px; }
+
+        /* ЧАТ */
+        .chat-container { display: flex; flex-direction: column; height: 400px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { display: flex; gap: 10px; align-items: flex-end; max-width: 80%; }
+        .chat-msg.own { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 18px; flex-shrink: 0; }
+        .chat-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .chat-bubble-wrapper { display: flex; flex-direction: column; }
+        .chat-name { font-size: 11px; color: #8899a6; margin-bottom: 3px; margin-left: 5px; }
+        .chat-msg.own .chat-name { text-align: right; margin-right: 5px; margin-left: 0; }
+        .chat-bubble { background: #16213e; padding: 10px 15px; border-radius: 15px; border-bottom-left-radius: 5px; font-size: 14px; color: #fff; word-break: break-word; text-align: left; }
+        .chat-msg.own .chat-bubble { background: #e94560; border-bottom-left-radius: 15px; border-bottom-right-radius: 5px; text-align: left;}
+        .chat-input-area { display: flex; padding: 10px; background: rgba(22, 33, 62, 0.8); border-top: 1px solid rgba(255,255,255,0.05); }
+        .chat-input-area input { margin: 0; border-radius: 10px 0 0 10px; border-right: none; }
+        .chat-send-btn { background: #e94560; border: none; color: #fff; padding: 0 20px; border-radius: 0 10px 10px 0; cursor: pointer; font-size: 18px; transition: 0.2s; }
+        .chat-send-btn:hover { background: #ff2e55; }
+
+        /* ДРУЗЬЯ */
+        .friends-layout { display: flex; gap: 20px; height: 450px; text-align: left; }
+        .friends-sidebar { width: 250px; display: flex; flex-direction: column; gap: 15px; }
+        .add-friend-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; }
+        .add-friend-box input { margin: 5px 0; padding: 10px; font-size: 13px; }
+        .add-friend-box button { padding: 10px; font-size: 13px; margin-top: 5px; }
+        .friends-list-box { flex-grow: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .friend-item { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .friend-item:hover { background: rgba(255,255,255,0.1); }
+        .friend-item.active { border: 1px solid #00ffcc; background: rgba(0, 255, 204, 0.1); }
+        .friend-info { display: flex; align-items: center; gap: 10px; }
+        .request-item { display: flex; align-items: center; justify-content: space-between; background: rgba(233, 69, 96, 0.1); border: 1px solid rgba(233, 69, 96, 0.3); padding: 10px; border-radius: 10px; }
+        .req-actions { display: flex; gap: 5px; }
+        .req-btn { border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px;}
+        .req-btn.accept { background: #00ffcc; color: #000; }
+        .req-btn.decline { background: #ff3333; color: #fff; }
+        .dm-area { flex-grow: 1; display: flex; flex-direction: column; background: rgba(0,0,0,0.2); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .dm-header { padding: 15px; background: rgba(22, 33, 62, 0.8); border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: bold; display: flex; align-items: center; gap: 10px;}
+        .dm-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+
+        /* Остальные */
+        .users-list { list-style: none; text-align: left; max-height: 350px; overflow-y: auto; }
+        .user-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .user-item.rank-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent); border: 1px solid rgba(255, 215, 0, 0.5); }
+        .user-item.rank-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.2), transparent); border: 1px solid rgba(192, 192, 192, 0.5); }
+        .user-item.rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.2), transparent); border: 1px solid rgba(205, 127, 50, 0.5); }
+        .user-info-left { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 20px; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .user-nick-list { font-size: 16px; font-weight: 600; display: flex; align-items: center;}
+        .user-email-list { font-size: 11px; color: #8899a6; }
+        .user-score { background: rgba(255, 215, 0, 0.1); color: #ffd700; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; border: 1px solid rgba(255, 215, 0, 0.3); }
+        .avatar-picker { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0; }
+        .avatar-option { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: rgba(255,255,255,0.05); border-radius: 50%; cursor: pointer; }
+        .avatar-option.selected { border: 2px solid #00ffcc; background: rgba(0, 255, 204, 0.2); }
+        .my-frames-list { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .my-frame-item { width: 60px; height: 60px; border-radius: 50%; background: #16213e; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; }
+        .my-frame-item.active { border: 4px solid #00ffcc; }
+        .loader { border: 4px solid rgba(255,255,255,0.1); border-left-color: #00ffcc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 600px) {
+            .top-right-balance { top: 15px; right: 15px; font-size: 18px; padding: 8px 15px; }
+            .content { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="authScreen" class="login-screen">
+        <div class="login-box">
+            <h2 id="authTitle">Вход</h2>
+            <input type="email" id="emailInput" placeholder="Email (почта)">
+            <input type="password" id="passwordInput" placeholder="Пароль (минимум 6 символов)">
+            <button class="action-btn" id="authBtn" onclick="handleAuth()">Войти</button>
+            <div class="switch-auth" onclick="toggleAuth()" id="switchText">Нет аккаунта? Зарегистрироваться</div>
+            <div id="errorMsg" style="color: #e94560; margin-top: 15px; font-size: 14px; font-weight: 600;"></div>
+        </div>
+    </div>
+
+    <div id="mainApp" class="main-app hidden">
+        
+        <div class="top-right-balance">
+            💰 <span id="klzAmountTop">0</span> KLZ
+        </div>
+
+        <div class="sidebar">
+            <h2>SOM I chai</h2>
+            <button class="nav-btn active" onclick="showTool('tool-clicker', this)">🎮 Кликер</button>
+            <button class="nav-btn" onclick="showTool('tool-earn', this)">⛏️ Фармилка</button>
+            <button class="nav-btn" onclick="showTool('tool-casino', this)">🎲 Казино</button>
+            <button class="nav-btn" onclick="showTool('tool-shop', this); loadShop()">🛒 Магазин</button>
+            
+            <button class="nav-btn" id="nav-friends" onclick="showTool('tool-friends', this); loadFriendsData()">
+                👥 Друзья <span id="reqCount" class="notif-badge hidden">0</span>
+            </button>
+            
+            <button class="nav-btn" onclick="showTool('tool-chat', this)">💬 Глобальный чат</button>
+            <button class="nav-btn" onclick="showTool('tool-users', this); loadUsers()">🏆 Зал славы</button>
+            <button class="nav-btn" onclick="showTool('tool-profile', this); loadMyProfile()">👤 Профиль</button>
+            
+            <div class="user-info">
+                <div class="side-avatar frame-none" id="sideAvatar">👤</div>
+                <div class="side-nick-container">
+                    <div class="side-nick" id="sideNick">Загрузка...</div>
+                    <div id="sideBadge"></div>
+                </div>
+                <div class="side-email" id="userEmail">...</div>
+                <button class="logout-btn" onclick="logout()">Выйти</button>
+            </div>
+        </div>
+
+        <div class="content">
+            
+            <div id="tool-clicker" class="tool-box active">
+                <h1>Игровой Кликер</h1>
+                <p style="color: #8899a6; font-size: 14px; margin-bottom: 10px;">Фарми клики и попадай в топ!</p>
+                <div class="clicker-area" id="clickerArea">
+                    <div class="gamepad-icon" id="gamepadBtn" onclick="handleGamepadClick(event)">🎮</div>
+                    <div style="color: #8899a6; font-size: 14px; margin-bottom: 5px; margin-top: 10px;">Всего кликов (Множитель: x<span id="clickPowerDisplay">1</span>):</div>
+                    <div class="score-display" id="clickScore">0</div>
+                </div>
+            </div>
+
+            <div id="tool-earn" class="tool-box">
+                <h1>⛏️ Фармилка</h1>
+                <p style="color: #8899a6; font-size: 14px; margin-bottom: 10px;">Кликай по кошельку, чтобы заработать 0.01 KLZ!</p>
+                <div class="clicker-area" id="earnArea">
+                    <div class="gamepad-icon" id="earnBtn" onclick="handleEarnClick(event)">💰</div>
+                </div>
+            </div>
+
+            <div id="tool-casino" class="tool-box">
+                <h1>🎲 Казино</h1>
+                
+                <div class="casino-grid">
+                    <div class="casino-section bj-section">
+                        <div class="casino-title">Блэкджек (21)</div>
+                        <div class="bet-buttons" id="bjBets">
+                            <button class="bet-btn active" onclick="setBet('bj', 10, this)">10 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('bj', 50, this)">50 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('bj', 100, this)">100 KLZ</button>
+                        </div>
+                        
+                        <div id="bjGameArea" style="display: flex; gap: 20px; justify-content: space-between; flex-wrap: wrap;">
+                            <div class="cards-container" style="flex: 1; min-width: 250px;">
+                                <div class="hand-label">Дилер: <span class="hand-score" id="dealerScore">0</span></div>
+                                <div class="cards-row" id="dealerCards"></div>
+                            </div>
+                            <div class="cards-container" style="flex: 1; min-width: 250px;">
+                                <div class="hand-label">Ты: <span class="hand-score" id="playerScore">0</span></div>
+                                <div class="cards-row" id="playerCards"></div>
+                            </div>
+                        </div>
+
+                        <div class="result-text" id="bjResult"></div>
+                        
+                        <div class="bj-controls" id="bjControls">
+                            <button class="action-btn" style="background: #00ffcc; color: #000;" id="bjStartBtn" onclick="startBlackjack()">Сделать ставку</button>
+                            <div id="bjPlayingBtns" class="hidden" style="display: flex; gap: 10px; width: 100%;">
+                                <button class="action-btn" style="background: #ffcc00; color: #000;" onclick="bjHit()">Ещё (Hit)</button>
+                                <button class="action-btn" style="background: #ff3333; color: #fff;" onclick="bjStand()">Хватит (Stand)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="casino-section">
+                        <div class="casino-title">Камень-Ножницы-Бумага</div>
+                        <div class="bet-buttons" id="rpsBets">
+                            <button class="bet-btn active" onclick="setBet('rps', 10, this)">10 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('rps', 50, this)">50 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('rps', 100, this)">100 KLZ</button>
+                        </div>
+                        <div class="rps-buttons">
+                            <button class="rps-btn" onclick="playCasinoRPS('Камень')">✊</button>
+                            <button class="rps-btn" onclick="playCasinoRPS('Ножницы')">✌️</button>
+                            <button class="rps-btn" onclick="playCasinoRPS('Бумага')">✋</button>
+                        </div>
+                        <div class="result-text" id="rpsResult"></div>
+                    </div>
+
+                    <div class="casino-section">
+                        <div class="casino-title">Угадай число (x4)</div>
+                        <div class="bet-buttons" id="guessBets">
+                            <button class="bet-btn active" onclick="setBet('guess', 10, this)">10 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('guess', 50, this)">50 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('guess', 100, this)">100 KLZ</button>
+                        </div>
+                        <p style="font-size: 12px; color: #8899a6; margin-bottom: 10px; text-align: center;">Загадай число от 1 до 5. Угадаешь — получишь x4!</p>
+                        <div class="guess-inputs">
+                            <input type="number" id="guessInput" min="1" max="5" placeholder="1-5">
+                            <button class="guess-btn" onclick="playCasinoGuess()">Сыграть</button>
+                        </div>
+                        <div class="result-text" id="guessResult"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-shop" class="tool-box">
+                <h1>🛒 Магазин</h1>
+                <div class="shop-section-title">Улучшения кликера (Для топа)</div>
+                <div class="shop-list">
+                    <div class="shop-item">
+                        <div class="shop-info">
+                            <div class="shop-title">💪 Сила Клика (Ур. <span id="powerLevel">1</span>)</div>
+                            <div class="shop-desc">Дает +1 клик за нажатие.</div>
+                        </div>
+                        <button class="shop-buy-btn" id="buyPowerBtn" onclick="buyUpgrade('power')">100 KLZ</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="shop-info">
+                            <div class="shop-title">🤖 Авто-Кликер (Ур. <span id="autoLevel">0</span>)</div>
+                            <div class="shop-desc">Делает 1 клик в секунду.</div>
+                        </div>
+                        <button class="shop-buy-btn" id="buyAutoBtn" onclick="buyUpgrade('auto')">250 KLZ</button>
+                    </div>
+                </div>
+                <div class="shop-section-title">Рамки для Аватарки</div>
+                <div class="shop-list" id="frameShopList"></div>
+            </div>
+
+            <div id="tool-friends" class="tool-box" style="max-width: 800px;">
+                <h1>👥 Друзья</h1>
+                <div class="friends-layout">
+                    <div class="friends-sidebar">
+                        <div class="add-friend-box">
+                            <p style="font-size:12px; color:#8899a6; margin-bottom:5px;">Добавить друга по Email:</p>
+                            <input type="email" id="friendEmailInput" placeholder="Введи email друга...">
+                            <button class="action-btn" onclick="sendFriendRequest()" style="margin-top:0; padding:10px;">Отправить заявку</button>
+                        </div>
+                        <div id="requestsContainer" class="friends-list-box" style="max-height: 150px;"></div>
+                        <div class="friends-list-box" id="friendsList"></div>
+                    </div>
+                    <div class="dm-area">
+                        <div id="dmPlaceholder" style="display:flex; align-items:center; justify-content:center; height:100%; color:#8899a6;">Выбери друга, чтобы начать общение</div>
+                        <div id="dmChatContainer" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+                            <div class="dm-header" id="dmHeaderName">Имя друга</div>
+                            <div class="dm-messages" id="dmMessages"></div>
+                            <div class="chat-input-area">
+                                <input type="text" id="dmInput" placeholder="Напиши сообщение..." onkeypress="handleDMEnter(event)">
+                                <button class="chat-send-btn" onclick="sendDM()">➤</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-chat" class="tool-box">
+                <h1>💬 Глобальный Чат</h1>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Напиши сообщение..." maxlength="100" onkeypress="handleChatEnter(event)">
+                        <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tool-users" class="tool-box">
+                <h1>🏆 Зал славы</h1>
+                <div id="usersLoader" class="loader hidden"></div>
+                <ul id="usersList" class="users-list"></ul>
+            </div>
+
+            <div id="tool-profile" class="tool-box">
+                <h1>Настройка профиля</h1>
+                <p style="color: #8899a6; margin-bottom: 5px;">Твои рамки:</p>
+                <div class="my-frames-list" id="myFramesList"></div>
+                <div class="avatar-picker" id="avatarPicker"></div>
+                <input type="text" id="customAvatarInput" placeholder="Ссылка на картинку (https://...)">
+                <input type="text" id="nicknameInput" placeholder="Твой никнейм" maxlength="20">
+                <button class="action-btn" onclick="saveProfile()">Сохранить изменения</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, query, where, orderBy, limit, onSnapshot, serverTimestamp, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtE2L9CeE6BOG42FqzHqZyYFvFeU7la_0",
+            authDomain: "simplegames-ru.firebaseapp.com",
+            projectId: "simplegames-ru",
+            storageBucket: "simplegames-ru.firebasestorage.app",
+            messagingSenderId: "204500385059",
+            appId: "1:204500385059:web:5b685ab375f9cc05c3a096"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const CREATOR_EMAIL = "faceitdsds@yandex.ru"; 
+
+        let currentUser = null;
+        let userData = { nickname: "Игрок", avatar: "😎", customAvatarUrl: "", frame: "none", unlockedFrames: ["none"], friends: [], requests: [] }; 
+        
+        let totalClicks = 0, klz = 0;
+        let clickPower = 1, autoClickers = 0, powerCost = 100, autoCost = 250;
+        let saveTimeout = null, autoClickInterval = null;
+        
+        let chatUnsubscribe = null; 
+        let friendsUnsubscribe = null;
+        let dmUnsubscribe = null;
+        
+        let lastMessageTime = 0;
+        let lastDmTime = 0;
+        let rpsBet = 10, guessBet = 10, bjBet = 10;
+        let currentDMFriend = null; 
+
+        let bjDeck = [];
+        let bjPlayerHand = [];
+        let bjDealerHand = [];
+        let bjGameActive = false;
+
+        const SHOP_FRAMES = [
+            { id: "gold", name: "Золотая", price: 500, desc: "Блестит как золото." },
+            { id: "neon", name: "Неоновая", price: 1000, desc: "Кислотный киберпанк." },
+            { id: "fire", name: "Огненная", price: 2500, desc: "Пульсирует пламенем." },
+            { id: "galaxy", name: "Космическая", price: 5000, desc: "Тайны вселенной." }
+        ];
+
+        function formatKlz(val) { return Number(val.toFixed(2)).toString(); }
+
+        let audioCtx;
+        function playTone(f, type, d, v) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.value = f; gain.gain.setValueAtTime(v, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + d);
+        }
+        window.playClick = () => playTone(600, 'sine', 0.1, 0.05);
+        window.playWinSound = () => { playTone(523, 'triangle', 0.15, 0.08); setTimeout(()=>playTone(659, 'triangle', 0.15, 0.08), 100); setTimeout(()=>playTone(783, 'triangle', 0.3, 0.08), 200); };
+        window.playLoseSound = () => { playTone(300, 'sawtooth', 0.2, 0.08); setTimeout(()=>playTone(250, 'sawtooth', 0.4, 0.08), 200); };
+        window.playDrawSound = () => playTone(400, 'square', 0.2, 0.05);
+        window.playGamepadSound = () => playTone(800, 'square', 0.05, 0.03);
+        window.playCardSound = () => playTone(300, 'sine', 0.1, 0.1);
+
+        let isLoginMode = true;
+        window.toggleAuth = function() {
+            isLoginMode = !isLoginMode;
+            document.getElementById("authTitle").innerText = isLoginMode ? "Вход" : "Регистрация";
+            document.getElementById("authBtn").innerText = isLoginMode ? "Войти" : "Создать аккаунт";
+            document.getElementById("switchText").innerText = isLoginMode ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти";
+            document.getElementById("errorMsg").innerText = "";
+        };
+
+        window.handleAuth = async function() {
+            const email = document.getElementById("emailInput").value;
+            const password = document.getElementById("passwordInput").value;
+            const errorMsg = document.getElementById("errorMsg");
+            errorMsg.innerText = "";
+            if(!email || !password) { errorMsg.innerText = "Заполни все поля!"; return; }
+
+            try {
+                if (isLoginMode) await signInWithEmailAndPassword(auth, email, password);
+                else await createUserWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') errorMsg.innerText = "Эта почта уже занята!";
+                else if (error.code === 'auth/weak-password') errorMsg.innerText = "Пароль слишком короткий!";
+                else if (error.code === 'auth/invalid-credential') errorMsg.innerText = "Неверная почта или пароль!";
+                else errorMsg.innerText = "Ошибка: " + error.message;
+            }
+        };
+
+        window.logout = () => signOut(auth);
+
+        function setAvatarHtml(el, emoji, url, frame) {
+            el.className = el.className.split(' ')[0];
+            el.classList.add('frame-' + frame);
+            if (url && url.trim() !== "") el.innerHTML = `<img src="${url}">`;
+            else el.innerText = emoji;
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById("authScreen").classList.add("hidden");
+                document.getElementById("mainApp").classList.remove("hidden");
+                document.getElementById("userEmail").innerText = user.email;
+                document.getElementById("sideBadge").innerHTML = user.email === CREATOR_EMAIL ? '<span class="badge-creator">СОЗДАТЕЛЬ</span>' : '';
+                
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists() && docSnap.data().nickname) {
+                    const data = docSnap.data();
+                    userData = { 
+                        nickname: data.nickname, avatar: data.avatar || "😎", customAvatarUrl: data.customAvatarUrl || "",
+                        frame: data.frame || "none", unlockedFrames: data.unlockedFrames || ["none"],
+                        friends: data.friends || [], requests: data.requests || []
+                    };
+                    
+                    totalClicks = data.clicks || 0; klz = data.klz || 0; 
+                    clickPower = data.clickPower || 1; autoClickers = data.autoClickers || 0; powerCost = data.powerCost || 100; autoCost = data.autoCost || 250;
+                    
+                    if (user.email === CREATOR_EMAIL && klz > 500) {
+                        klz = 500; await setDoc(docRef, { klz: klz }, { merge: true });
+                    }
+                    
+                    setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, userData.customAvatarUrl, userData.frame);
+                    document.getElementById("sideNick").innerText = userData.nickname;
+                    
+                    updateUI(); startAutoClicker(); listenToFriendsAndRequests();
+                } else {
+                    await setDoc(docRef, { 
+                        email: user.email, nickname: "Игрок_" + Math.floor(Math.random() * 1000), avatar: "😎", customAvatarUrl: "",
+                        clicks: 0, klz: user.email === CREATOR_EMAIL ? 500 : 0, clickPower: 1, autoClickers: 0, powerCost: 100, autoCost: 250, createdAt: Date.now(),
+                        frame: "none", unlockedFrames: ["none"], friends: [], requests: []
+                    }, { merge: true });
+                    klz = user.email === CREATOR_EMAIL ? 500 : 0;
+                    updateUI();
+                }
+                listenToChat();
+            } else {
+                currentUser = null;
+                document.getElementById("authScreen").classList.remove("hidden");
+                document.getElementById("mainApp").classList.add("hidden");
+                if (autoClickInterval) clearInterval(autoClickInterval);
+                if (chatUnsubscribe) { chatUnsubscribe(); chatUnsubscribe = null; }
+                if (friendsUnsubscribe) { friendsUnsubscribe(); friendsUnsubscribe = null; }
+                if (dmUnsubscribe) { dmUnsubscribe(); dmUnsubscribe = null; }
+            }
+        });
+
+        window.showTool = function(toolId, btn) {
+            document.querySelectorAll('.tool-box').forEach(box => box.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(toolId).classList.add('active');
+            btn.classList.add('active');
+        };
+
+        function updateUI() {
+            document.getElementById("klzAmountTop").innerText = formatKlz(klz);
+            document.getElementById("clickPowerDisplay").innerText = clickPower;
+            document.getElementById("clickScore").innerText = totalClicks;
+        }
+
+        function saveGameData() {
+            if(!currentUser) return;
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(async () => {
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid), { 
+                        clicks: totalClicks, klz: klz, clickPower: clickPower, autoClickers: autoClickers, powerCost: powerCost, autoCost: autoCost
+                    }, { merge: true });
+                } catch (e) { console.error(e); }
+            }, 2000);
+        }
+
+        window.handleGamepadClick = function(event) {
+            if (!currentUser) return;
+            totalClicks += clickPower;
+            playGamepadSound();
+            const btn = document.getElementById("gamepadBtn");
+            btn.classList.remove("gamepad-clicked"); void btn.offsetWidth; btn.classList.add("gamepad-clicked");
+            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#00ffcc"; floatingPlus.innerText = `+${clickPower}`;
+            const rect = document.getElementById("clickerArea").getBoundingClientRect();
+            floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
+            document.getElementById("clickerArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
+            updateUI(); saveGameData();
+        };
+
+        window.handleEarnClick = function(event) {
+            if (!currentUser) return;
+            klz += 0.01; klz = Number(klz.toFixed(2));
+            playGamepadSound();
+            const btn = document.getElementById("earnBtn");
+            btn.classList.remove("gamepad-clicked"); void btn.offsetWidth; btn.classList.add("gamepad-clicked");
+            const floatingPlus = document.createElement("div"); floatingPlus.className = "floating-plus"; floatingPlus.style.color = "#ffd700"; floatingPlus.innerText = `+0.01 KLZ`;
+            const rect = document.getElementById("earnArea").getBoundingClientRect();
+            floatingPlus.style.left = (event.clientX - rect.left) + "px"; floatingPlus.style.top = (event.clientY - rect.top) + "px";
+            document.getElementById("earnArea").appendChild(floatingPlus); setTimeout(() => { floatingPlus.remove(); }, 600);
+            updateUI(); saveGameData();
+        };
+
+        window.setBet = function(game, amount, btn) {
+            if (game === 'rps') {
+                rpsBet = amount; document.querySelectorAll('#rpsBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            } else if (game === 'guess') {
+                guessBet = amount; document.querySelectorAll('#guessBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            } else if (game === 'bj') {
+                if (bjGameActive) return;
+                bjBet = amount; document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            }
+            playClick();
+        };
+
+        window.playCasinoRPS = function(playerChoice) {
+            if (!currentUser) return;
+            if (klz < rpsBet) { alert("Недостаточно KLZ для ставки!"); return; }
+            const options = ['Камень', 'Ножницы', 'Бумага'];
+            const computerChoice = options[Math.floor(Math.random() * options.length)];
+            const resultBox = document.getElementById("rpsResult");
+            let resultText = `Ты: ${playerChoice} | Комп: ${computerChoice}. `;
+            setTimeout(() => {
+                if (playerChoice === computerChoice) { resultText += "Ничья! 🤝"; resultBox.style.color = "#ffcc00"; playDrawSound();
+                } else if ((playerChoice === 'Камень' && computerChoice === 'Ножницы') || (playerChoice === 'Ножницы' && computerChoice === 'Бумага') || (playerChoice === 'Бумага' && computerChoice === 'Камень')) {
+                    resultText += `Победа! +${rpsBet}`; resultBox.style.color = "#00ff66"; klz += rpsBet; playWinSound();
+                } else { resultText += `Проигрыш... -${rpsBet}`; resultBox.style.color = "#ff3333"; klz -= rpsBet; playLoseSound(); }
+                klz = Number(klz.toFixed(2));
+                resultBox.innerText = resultText; updateUI(); saveGameData();
+            }, 100);
+        };
+
+        window.playCasinoGuess = function() {
+            if (!currentUser) return;
+            if (klz < guessBet) { alert("Недостаточно KLZ для ставки!"); return; }
+            const input = document.getElementById("guessInput");
+            const userGuess = parseInt(input.value);
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 5) { alert("Введи число от 1 до 5!"); return; }
+            const computerNumber = Math.floor(Math.random() * 5) + 1; 
+            const resultBox = document.getElementById("guessResult");
+            let resultText = `Выпало: ${computerNumber}. `;
+            setTimeout(() => {
+                if (userGuess === computerNumber) { resultText += `Ты угадал! +${guessBet * 3}`; resultBox.style.color = "#00ff66"; klz += (guessBet * 3); playWinSound();
+                } else { resultText += `Не угадал... -${guessBet}`; resultBox.style.color = "#ff3333"; klz -= guessBet; playLoseSound(); }
+                klz = Number(klz.toFixed(2));
+                resultBox.innerText = resultText; updateUI(); saveGameData();
+            }, 100);
+        };
+
+        function createBjDeck() {
+            const suits = ['♠️', '♥️', '♦️', '♣️'];
+            const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+            let deck = [];
+            for (let s of suits) { for (let v of values) { deck.push({ value: v, suit: s }); } }
+            for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+            return deck;
+        }
+
+        function getCardValue(card) {
+            if (['J', 'Q', 'K'].includes(card.value)) return 10;
+            if (card.value === 'A') return 11;
+            return parseInt(card.value);
+        }
+
+        function calculateHand(hand) {
+            let score = 0; let aces = 0;
+            for (let card of hand) { score += getCardValue(card); if (card.value === 'A') aces++; }
+            while (score > 21 && aces > 0) { score -= 10; aces--; }
+            return score;
+        }
+
+        function renderBjCards() {
+            const dealerDiv = document.getElementById("dealerCards");
+            const playerDiv = document.getElementById("playerCards");
+            dealerDiv.innerHTML = ""; playerDiv.innerHTML = "";
+
+            bjDealerHand.forEach((card, index) => {
+                const div = document.createElement("div");
+                if (index === 1 && bjGameActive) {
+                    div.className = "card hidden"; div.innerText = "?";
+                } else {
+                    div.className = `card ${['♥️', '♦️'].includes(card.suit) ? 'red' : ''}`;
+                    div.innerText = `${card.value}${card.suit}`;
+                }
+                dealerDiv.appendChild(div);
+            });
+
+            bjPlayerHand.forEach(card => {
+                const div = document.createElement("div");
+                div.className = `card ${['♥️', '♦️'].includes(card.suit) ? 'red' : ''}`;
+                div.innerText = `${card.value}${card.suit}`;
+                playerDiv.appendChild(div);
+            });
+
+            document.getElementById("playerScore").innerText = calculateHand(bjPlayerHand);
+            document.getElementById("dealerScore").innerText = bjGameActive ? getCardValue(bjDealerHand[0]) : calculateHand(bjDealerHand);
+        }
+
+        window.startBlackjack = function() {
+            if (klz < bjBet) { alert("Недостаточно KLZ для ставки!"); return; }
+            playCardSound();
+            klz -= bjBet; klz = Number(klz.toFixed(2));
+            updateUI(); saveGameData();
+
+            bjDeck = createBjDeck();
+            bjPlayerHand = [bjDeck.pop(), bjDeck.pop()];
+            bjDealerHand = [bjDeck.pop(), bjDeck.pop()];
+            bjGameActive = true;
+
+            document.getElementById("bjResult").innerText = "";
+            document.getElementById("bjStartBtn").classList.add("hidden");
+            document.getElementById("bjPlayingBtns").classList.remove("hidden");
+            document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = true);
+
+            renderBjCards();
+            if (calculateHand(bjPlayerHand) === 21) bjStand();
+        };
+
+        window.bjHit = function() {
+            if (!bjGameActive) return;
+            playCardSound();
+            bjPlayerHand.push(bjDeck.pop());
+            renderBjCards();
+
+            if (calculateHand(bjPlayerHand) > 21) {
+                bjGameActive = false;
+                document.getElementById("bjResult").innerText = "Перебор! Ты проиграл. 💀";
+                document.getElementById("bjResult").style.color = "#ff3333";
+                playLoseSound();
+                endBjGame();
+            }
+        };
+
+        window.bjStand = function() {
+            if (!bjGameActive) return;
+            bjGameActive = false;
+            while (calculateHand(bjDealerHand) < 17) { bjDealerHand.push(bjDeck.pop()); }
+            renderBjCards(); playCardSound();
+
+            const playerScore = calculateHand(bjPlayerHand);
+            const dealerScore = calculateHand(bjDealerHand);
+            const resultBox = document.getElementById("bjResult");
+
+            if (dealerScore > 21) { resultBox.innerText = "У дилера перебор! Ты победил! 🎉"; resultBox.style.color = "#00ff66"; klz += (bjBet * 2); playWinSound();
+            } else if (playerScore > dealerScore) { resultBox.innerText = "Ты победил! 🎉"; resultBox.style.color = "#00ff66"; klz += (bjBet * 2); playWinSound();
+            } else if (playerScore < dealerScore) { resultBox.innerText = "Дилер победил. 💀"; resultBox.style.color = "#ff3333"; playLoseSound();
+            } else { resultBox.innerText = "Ничья! Ставка возвращается. 🤝"; resultBox.style.color = "#ffcc00"; klz += bjBet; playDrawSound(); }
+
+            klz = Number(klz.toFixed(2));
+            updateUI(); saveGameData();
+            endBjGame();
+        };
+
+        function endBjGame() {
+            document.getElementById("bjStartBtn").classList.remove("hidden");
+            document.getElementById("bjPlayingBtns").classList.add("hidden");
+            document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.disabled = false);
+        }
+
+        window.loadShop = function() {
+            document.getElementById("powerLevel").innerText = clickPower;
+            document.getElementById("autoLevel").innerText = autoClickers;
+            const pBtn = document.getElementById("buyPowerBtn"); pBtn.innerText = `${powerCost} KLZ`; pBtn.disabled = klz < powerCost;
+            const aBtn = document.getElementById("buyAutoBtn"); aBtn.innerText = `${autoCost} KLZ`; aBtn.disabled = klz < autoCost;
+            const frameList = document.getElementById("frameShopList"); frameList.innerHTML = "";
+            SHOP_FRAMES.forEach(frame => {
+                const isUnlocked = userData.unlockedFrames.includes(frame.id);
+                const isEquipped = userData.frame === frame.id;
+                const div = document.createElement("div"); div.className = "shop-item";
+                let btnHtml = "";
+                if (isEquipped) btnHtml = `<button class="shop-buy-btn equipped" disabled>Надето</button>`;
+                else if (isUnlocked) btnHtml = `<button class="shop-buy-btn" style="background:#8a2be2; color:white;" onclick="equipFrame('${frame.id}')">Надеть</button>`;
+                else btnHtml = `<button class="shop-buy-btn" onclick="buyFrame('${frame.id}', ${frame.price})" ${klz < frame.price ? 'disabled' : ''}>${frame.price} KLZ</button>`;
+                div.innerHTML = `<div style="display:flex; align-items:center;"><div class="frame-preview frame-${frame.id}">😎</div><div class="shop-info"><div class="shop-title">${frame.name}</div><div class="shop-desc">${frame.desc}</div></div></div>${btnHtml}`;
+                frameList.appendChild(div);
+            });
+        };
+
+        window.buyUpgrade = function(type) {
+            if (type === 'power' && klz >= powerCost) { klz -= powerCost; clickPower++; powerCost = Math.floor(powerCost * 1.8); playWinSound(); } 
+            else if (type === 'auto' && klz >= autoCost) { klz -= autoCost; autoClickers++; autoCost = Math.floor(autoCost * 2.2); startAutoClicker(); playWinSound(); }
+            updateUI(); loadShop(); saveGameData();
+        };
+
+        window.buyFrame = async function(id, price) {
+            if (klz >= price && !userData.unlockedFrames.includes(id)) {
+                klz -= price; userData.unlockedFrames.push(id); userData.frame = id;
+                playWinSound(); updateUI(); loadShop();
+                await setDoc(doc(db, "users", currentUser.uid), { klz: klz, frame: userData.frame, unlockedFrames: userData.unlockedFrames }, { merge: true });
+                setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, userData.customAvatarUrl, userData.frame);
+            }
+        };
+
+        window.equipFrame = async function(id) {
+            if (userData.unlockedFrames.includes(id)) {
+                userData.frame = id; playClick(); loadShop();
+                await setDoc(doc(db, "users", currentUser.uid), { frame: userData.frame }, { merge: true });
+                setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, userData.customAvatarUrl, userData.frame); loadMyProfile();
+            }
+        };
+
+        function startAutoClicker() {
+            if (autoClickInterval) clearInterval(autoClickInterval);
+            autoClickInterval = setInterval(() => {
+                if (currentUser && autoClickers > 0) { totalClicks += (autoClickers * clickPower); updateUI(); if(Math.random() < 0.5) saveGameData(); }
+            }, 1000);
+        }
+
+        const availableAvatars = ["😎", "🐉", "👽", "🔥", "🦊", "🤖", "💀", "🍕", "🥷", "👑", "🐺", "🧙‍♂️"];
+        const picker = document.getElementById("avatarPicker");
+        availableAvatars.forEach(emoji => {
+            const div = document.createElement("div"); div.className = "avatar-option"; div.innerText = emoji;
+            div.onclick = () => {
+                playClick(); document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected')); div.classList.add('selected');
+                userData.avatar = emoji; userData.customAvatarUrl = ""; document.getElementById("customAvatarInput").value = "";
+            };
+            picker.appendChild(div);
+        });
+
+        window.loadMyProfile = async function() {
+            if (!currentUser) return;
+            const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                userData.frame = data.frame || "none"; userData.unlockedFrames = data.unlockedFrames || ["none"];
+                document.getElementById("nicknameInput").value = data.nickname || "";
+                userData.avatar = data.avatar || "😎"; userData.customAvatarUrl = data.customAvatarUrl || "";
+                document.getElementById("customAvatarInput").value = userData.customAvatarUrl;
+                document.querySelectorAll('.avatar-option').forEach(el => {
+                    el.classList.remove('selected'); if (!userData.customAvatarUrl && el.innerText === userData.avatar) el.classList.add('selected');
+                });
+                const myFramesList = document.getElementById("myFramesList"); myFramesList.innerHTML = "";
+                userData.unlockedFrames.forEach(frameId => {
+                    const isActive = userData.frame === frameId;
+                    const div = document.createElement("div"); div.className = `my-frame-item frame-${frameId} ${isActive ? 'active' : ''}`; div.innerHTML = userData.avatar;
+                    div.onclick = () => window.equipFrame(frameId); myFramesList.appendChild(div);
+                });
+            }
+        };
+
+        window.saveProfile = async function() {
+            if (!currentUser) return;
+            const newNickname = document.getElementById("nicknameInput").value.trim();
+            const newUrl = document.getElementById("customAvatarInput").value.trim();
+            if (newNickname === "") { alert("Никнейм не может быть пустым!"); return; }
+            await setDoc(doc(db, "users", currentUser.uid), { nickname: newNickname, avatar: userData.avatar, customAvatarUrl: newUrl }, { merge: true });
+            userData.nickname = newNickname; userData.customAvatarUrl = newUrl;
+            document.getElementById("sideNick").innerText = newNickname; setAvatarHtml(document.getElementById("sideAvatar"), userData.avatar, newUrl, userData.frame);
+            playWinSound(); alert("Профиль сохранен!"); loadMyProfile();
+        };
+
+        function listenToFriendsAndRequests() {
+            if (friendsUnsubscribe) friendsUnsubscribe();
+            friendsUnsubscribe = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+                const data = doc.data();
+                userData.friends = data.friends || [];
+                userData.requests = data.requests || [];
+                const reqCount = document.getElementById("reqCount");
+                if (userData.requests.length > 0) { reqCount.innerText = userData.requests.length; reqCount.classList.remove("hidden"); }
+                else { reqCount.classList.add("hidden"); }
+            });
+        }
+
+        window.sendFriendRequest = async function() {
+            const targetEmail = document.getElementById("friendEmailInput").value.trim();
+            if (!targetEmail) { alert("Введи email!"); return; }
+            if (targetEmail === currentUser.email) { alert("Это твой email!"); return; }
+            const q = query(collection(db, "users"), where("email", "==", targetEmail));
+            const snapshot = await getDocs(q);
+            if (snapshot.empty) { alert("Пользователь с таким email не найден."); return; }
+            const targetDoc = snapshot.docs[0]; const targetData = targetDoc.data(); const targetUid = targetDoc.id;
+            if (userData.friends.includes(targetUid)) { alert("Вы уже друзья!"); return; }
+            if (targetData.requests && targetData.requests.includes(currentUser.uid)) { alert("Заявка уже отправлена!"); return; }
+            await updateDoc(doc(db, "users", targetUid), { requests: arrayUnion(currentUser.uid) });
+            playWinSound(); alert(`Заявка отправлена пользователю ${targetData.nickname}!`);
+            document.getElementById("friendEmailInput").value = "";
+        };
+
+        window.loadFriendsData = async function() {
+            const reqContainer = document.getElementById("requestsContainer"); reqContainer.innerHTML = "";
+            if (userData.requests.length > 0) {
+                for (const reqUid of userData.requests) {
+                    const docSnap = await getDoc(doc(db, "users", reqUid));
+                    if (docSnap.exists()) {
+                        const reqData = docSnap.data();
+                        const div = document.createElement("div"); div.className = "request-item";
+                        div.innerHTML = `<div style="font-size:12px; font-weight:bold;">${reqData.nickname}</div><div class="req-actions"><button class="req-btn accept" onclick="acceptFriend('${reqUid}')">✔</button><button class="req-btn decline" onclick="declineFriend('${reqUid}')">✖</button></div>`;
+                        reqContainer.appendChild(div);
+                    }
+                }
+            } else { reqContainer.innerHTML = "<div style='font-size:12px; color:#8899a6; text-align:center; padding:10px;'>Нет новых заявок</div>"; }
+            const friendsList = document.getElementById("friendsList"); friendsList.innerHTML = "";
+            if (userData.friends.length > 0) {
+                for (const friendUid of userData.friends) {
+                    const docSnap = await getDoc(doc(db, "users", friendUid));
+                    if (docSnap.exists()) {
+                        const fData = docSnap.data();
+                        let avatarHtml = (fData.customAvatarUrl && fData.customAvatarUrl.trim() !== "") ? `<img src="${fData.customAvatarUrl}">` : (fData.avatar || "👤");
+                        let frameClass = fData.frame ? `frame-${fData.frame}` : "frame-none";
+                        const div = document.createElement("div"); div.className = "friend-item"; div.id = `friend-${friendUid}`;
+                        div.onclick = () => openDM(friendUid, fData.nickname, avatarHtml);
+                        div.innerHTML = `<div class="friend-info"><div class="user-avatar ${frameClass}" style="width:35px; height:35px; font-size:16px;">${avatarHtml}</div><div style="font-size:14px; font-weight:bold;">${fData.nickname}</div></div>`;
+                        friendsList.appendChild(div);
+                    }
+                }
+            } else { friendsList.innerHTML = "<div style='font-size:12px; color:#8899a6; text-align:center; padding:10px;'>Пока нет друзей</div>"; }
+        };
+
+        window.acceptFriend = async function(friendUid) {
+            await updateDoc(doc(db, "users", currentUser.uid), { requests: arrayRemove(friendUid), friends: arrayUnion(friendUid) });
+            await updateDoc(doc(db, "users", friendUid), { friends: arrayUnion(currentUser.uid) });
+            playWinSound(); loadFriendsData();
+        };
+
+        window.declineFriend = async function(friendUid) {
+            await updateDoc(doc(db, "users", currentUser.uid), { requests: arrayRemove(friendUid) });
+            playClick(); loadFriendsData();
+        };
+
+        window.openDM = function(friendUid, friendName, friendAvatarHtml) {
+            currentDMFriend = friendUid;
+            document.querySelectorAll('.friend-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`friend-${friendUid}`).classList.add('active');
+            document.getElementById("dmPlaceholder").style.display = "none";
+            document.getElementById("dmChatContainer").classList.remove("hidden");
+            document.getElementById("dmHeaderName").innerHTML = `<div class="user-avatar" style="width:30px; height:30px; margin-right:10px;">${friendAvatarHtml}</div> ${friendName}`;
+            const messagesContainer = document.getElementById("dmMessages"); messagesContainer.innerHTML = "";
+            const chatId = [currentUser.uid, friendUid].sort().join('_');
+            if (dmUnsubscribe) dmUnsubscribe();
+            const q = query(collection(db, "dm_messages"), where("chatId", "==", chatId), limit(50));
+            dmUnsubscribe = onSnapshot(q, (snapshot) => {
+                messagesContainer.innerHTML = "";
+                let msgs = []; snapshot.forEach(doc => msgs.push(doc.data()));
+                msgs.sort((a, b) => { let t1 = a.createdAt ? a.createdAt.toMillis() : 0; let t2 = b.createdAt ? b.createdAt.toMillis() : 0; return t1 - t2; });
+                msgs.forEach((msg) => {
+                    const isOwn = msg.senderUid === currentUser.uid;
+                    const msgDiv = document.createElement("div"); msgDiv.className = `chat-msg ${isOwn ? 'own' : ''}`;
+                    let avatarHtml = (msg.customAvatarUrl && msg.customAvatarUrl.trim() !== "") ? `<img src="${msg.customAvatarUrl}">` : (msg.avatar || "👤");
+                    let msgFrame = msg.frame || "none";
+                    msgDiv.innerHTML = `<div class="chat-avatar frame-${msgFrame}">${avatarHtml}</div><div class="chat-bubble-wrapper"><div class="chat-bubble">${msg.text}</div></div>`;
+                    messagesContainer.appendChild(msgDiv);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+        };
+
+        window.handleDMEnter = function(event) { if (event.key === "Enter") sendDM(); };
+
+        window.sendDM = async function() {
+            if (!currentUser || !currentDMFriend) return;
+            const input = document.getElementById("dmInput"); const text = input.value.trim();
+            if (text === "") return;
+            const now = Date.now(); if (now - lastDmTime < 1000) { alert("Не так быстро!"); return; }
+            input.value = ""; lastDmTime = now;
+            const chatId = [currentUser.uid, currentDMFriend].sort().join('_');
+            try {
+                await addDoc(collection(db, "dm_messages"), {
+                    chatId: chatId, senderUid: currentUser.uid, receiverUid: currentDMFriend, text: text,
+                    nickname: userData.nickname, avatar: userData.avatar, customAvatarUrl: userData.customAvatarUrl, frame: userData.frame, createdAt: serverTimestamp()
+                });
+            } catch (e) { console.error("Ошибка отправки ЛС: ", e); }
+        };
+
+        function listenToChat() {
+            const messagesContainer = document.getElementById("chatMessages");
+            const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(50));
+            if(chatUnsubscribe) chatUnsubscribe();
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                messagesContainer.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const msg = doc.data(); let timeStr = "";
+                    if(msg.createdAt) { const date = msg.createdAt.toDate(); timeStr = date.getHours().toString().padStart(2, '0') + ":" + date.getMinutes().toString().padStart(2, '0'); }
+                    const isOwn = currentUser && msg.uid === currentUser.uid;
+                    const msgDiv = document.createElement("div"); msgDiv.className = `chat-msg ${isOwn ? 'own' : ''}`;
+                    let avatarHtml = (msg.customAvatarUrl && msg.customAvatarUrl.trim() !== "") ? `<img src="${msg.customAvatarUrl}">` : (msg.avatar || "👤");
+                    const msgFrame = msg.frame || "none";
+                    let badgeHtml = msg.email === CREATOR_EMAIL ? '<span class="badge-creator" style="font-size:8px; padding:1px 4px;">СОЗДАТЕЛЬ</span>' : '';
+                    msgDiv.innerHTML = `<div class="chat-avatar frame-${msgFrame}">${avatarHtml}</div><div class="chat-bubble-wrapper"><div class="chat-name">${msg.nickname} ${badgeHtml} • ${timeStr}</div><div class="chat-bubble">${msg.text}</div></div>`;
+                    messagesContainer.appendChild(msgDiv);
+                });
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+        }
+
+        window.handleChatEnter = function(event) { if (event.key === "Enter") sendMessage(); };
+
+        window.sendMessage = async function() {
+            if (!currentUser) return;
+            const input = document.getElementById("chatInput"); const text = input.value.trim();
+            if (text === "") return;
+            const now = Date.now(); if (now - lastMessageTime < 2000) { alert("Не так быстро!"); return; }
+            input.value = ""; lastMessageTime = now;
+            try {
+                await addDoc(collection(db, "messages"), {
+                    text: text, uid: currentUser.uid, nickname: userData.nickname,
+                    avatar: userData.avatar, customAvatarUrl: userData.customAvatarUrl, frame: userData.frame, email: currentUser.email, createdAt: serverTimestamp()
+                });
+            } catch (e) { console.error("Ошибка отправки: ", e); }
+        };
+
+        window.loadUsers = async function() {
+            const list = document.getElementById("usersList");
+            document.getElementById("usersLoader").classList.remove("hidden"); list.innerHTML = ""; 
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                let usersArray = [];
+                querySnapshot.forEach(doc => { const d = doc.data(); if(d.email) usersArray.push(d); });
+                usersArray.sort((a, b) => (b.klz || 0) - (a.klz || 0));
+                usersArray.forEach((data, index) => {
+                    let rank = index + 1;
+                    let medal = rank === 1 ? "🥇 " : rank === 2 ? "🥈 " : rank === 3 ? "🥉 " : "";
+                    let badgeHtml = data.email === CREATOR_EMAIL ? '<span class="badge-creator">СОЗДАТЕЛЬ</span>' : "";
+                    let avatarHtml = (data.customAvatarUrl && data.customAvatarUrl.trim() !== "") ? `<img src="${data.customAvatarUrl}">` : (data.avatar || "👤");
+                    let frameClass = data.frame ? `frame-${data.frame}` : "frame-none";
+                    const li = document.createElement("li"); li.className = `user-item ${rank <= 3 ? 'rank-' + rank : ''}`;
+                    li.innerHTML = `<div class="user-info-left"><div class="rank-number" style="width:30px; font-weight:bold; color:#8899a6;">${medal}${rank}</div><div class="user-avatar ${frameClass}">${avatarHtml}</div><div><div class="user-nick-list">${data.nickname || "Без имени"} ${badgeHtml}</div><div class="user-email-list">${data.email}</div></div></div><div class="user-score">${formatKlz(data.klz || 0)} KLZ</div>`;
+                    list.appendChild(ul);
+                });
+            } catch (e) { list.innerHTML = "<p style='text-align:center; color:#e94560;'>Ошибка базы.</p>"; } 
+            finally { document.getElementById("usersLoader").classList.add("hidden"); }
+        };
+    </script>
+</body>
+</html>
