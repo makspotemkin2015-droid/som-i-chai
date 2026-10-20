@@ -1446,7 +1446,10 @@
                     chatId: chatId, senderUid: currentUser.uid, receiverUid: currentDMFriend, text: text,
                     nickname: userData.nickname, avatar: userData.avatar, customAvatarUrl: userData.customAvatarUrl, frame: userData.frame, createdAt: serverTimestamp()
                 });
-            } catch (e) { console.error("Ошибка отправки ЛС: ", e); }
+            } catch (e) { 
+                console.error("Ошибка отправки ЛС: ", e); 
+                showToast("Ошибка: " + e.message, "error");
+            }
         };
 
         function listenToChat() {
@@ -1469,6 +1472,9 @@
                     messagesContainer.appendChild(msgDiv);
                 });
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, (error) => {
+                console.error("Ошибка прослушивания чата: ", error);
+                showToast("Ошибка чата: " + error.message, "error");
             });
         }
 
@@ -1487,7 +1493,10 @@
                     activePrefix: userData.activePrefix,
                     createdAt: serverTimestamp()
                 });
-            } catch (e) { console.error("Ошибка отправки: ", e); }
+            } catch (e) { 
+                console.error("Ошибка отправки: ", e); 
+                showToast("Ошибка: " + e.message, "error");
+            }
         };
 
         window.loadUsers = async function() {
