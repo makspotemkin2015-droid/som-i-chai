@@ -4,19 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- НАЗВАНИЕ И ОПИСАНИЕ САЙТА -->
     <title>SOM I chai | Соцсеть, Казино и Игры</title>
     <meta name="description" content="SOM I chai - новая соцсеть! Тут есть общение, казино и наша валюта. Хочешь выделятся? Купи крутую рамку для аватарки и общайся как крутой челик!">
     <meta name="keywords" content="SOM I chai, соцсеть, казино, общение, KLZ, рамки, кликер, игры, блэкджек">
-
-    <!-- КОД ОТ GOOGLE -->
     <meta name="google-site-verification" content="jjsBjLwajw9ldAsux1UKeNJYY0lkkiV6yw-BRXIpgaw" />
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
-        /* --- КРАСИВЫЙ СКРОЛЛБАР --- */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(233, 69, 96, 0.5); border-radius: 10px; }
@@ -30,31 +26,26 @@
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* --- АНИМАЦИИ --- */
         @keyframes clickSquish { 0% { transform: scale(1); } 50% { transform: scale(0.85); filter: brightness(1.5); } 100% { transform: scale(1); } }
         .gamepad-clicked { animation: clickSquish 0.1s ease; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.5); } }
         .floating-plus { position: absolute; font-size: 30px; font-weight: bold; pointer-events: none; animation: floatUp 0.6s ease-out forwards; }
         @keyframes firePulse { 0% { box-shadow: 0 0 10px #ff4500, inset 0 0 10px #ff4500; } 50% { box-shadow: 0 0 25px #ff0000, inset 0 0 15px #ff0000; } 100% { box-shadow: 0 0 10px #ff4500, inset 0 0 10px #ff4500; } }
 
-        /* --- РАМКИ --- */
         .frame-none { border: 3px solid transparent; }
         .frame-gold { border: 3px solid #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
         .frame-neon { border: 3px solid #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
         .frame-fire { border: 3px solid #ff4500; animation: firePulse 1.5s infinite alternate; }
         .frame-galaxy { border: 3px solid #8a2be2; box-shadow: 0 0 20px rgba(138, 43, 226, 0.8), inset 0 0 10px rgba(138, 43, 226, 0.5); background: linear-gradient(135deg, rgba(138,43,226,0.2), rgba(75,0,130,0.4)); }
 
-        /* --- ПРИПИСКА СОЗДАТЕЛЬ --- */
         .badge-creator { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
 
-        /* --- ЭКРАН ВХОДА --- */
         .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 41, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-box { background: rgba(22, 33, 62, 0.6); backdrop-filter: blur(15px); padding: 40px; border-radius: 20px; text-align: center; width: 380px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
         .login-box h2 { color: #fff; margin-bottom: 25px; font-weight: 800; text-shadow: 0 0 10px #e94560; }
         .login-box input, .tool-box input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white; outline: none; font-size: 15px; }
         .login-box input:focus, .tool-box input:focus { border-color: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.5); }
 
-        /* --- КНОПКИ --- */
         .action-btn { background: linear-gradient(90deg, #e94560, #ff2e55); color: white; border: none; padding: 15px; font-size: 16px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4); }
         .action-btn { width: 100%; margin-top: 15px; }
         .action-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6); }
@@ -62,7 +53,6 @@
         .switch-auth:hover { color: #e94560; }
         .hidden { display: none !important; }
 
-        /* --- ОСНОВНОЙ САЙТ --- */
         .main-app { display: flex; width: 100%; height: 100%; position: relative; }
         .sidebar { width: 280px; background: rgba(22, 33, 62, 0.4); backdrop-filter: blur(20px); padding: 30px 20px; display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.05); z-index: 10; overflow-y: auto;}
         .sidebar h2 { color: #fff; text-align: center; margin-bottom: 20px; font-weight: 800; text-shadow: 0 0 15px #00ffcc; }
@@ -84,56 +74,51 @@
         
         .content { flex-grow: 1; padding: 80px 40px 40px 40px; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; position: relative;}
         
-        /* БАЛАНС */
         .top-right-balance { position: fixed; top: 30px; right: 40px; background: rgba(22, 33, 62, 0.8); backdrop-filter: blur(15px); padding: 12px 25px; border-radius: 20px; font-size: 26px; font-weight: 800; color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.6); border: 1px solid rgba(255, 215, 0, 0.3); z-index: 100; display: flex; align-items: center; gap: 10px; }
 
-        /* ОКНО ИГРЫ */
-        .tool-box { 
-            display: none; background: rgba(22, 33, 62, 0.6); backdrop-filter: blur(15px); 
-            padding: 30px; border-radius: 24px; width: 100%; max-width: 600px; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-        }
+        .tool-box { display: none; background: rgba(22, 33, 62, 0.6); backdrop-filter: blur(15px); padding: 30px; border-radius: 24px; width: 100%; max-width: 600px; text-align: center; border: 1px solid rgba(255,255,255,0.1); max-height: calc(100vh - 120px); overflow-y: auto; }
         .tool-box.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .tool-box h1 { color: #fff; margin-bottom: 20px; font-weight: 800; }
 
-        /* СТИЛИ КЛИКЕРА / ФАРМИЛКИ */
         .clicker-area { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
         .gamepad-icon { font-size: 150px; cursor: pointer; user-select: none; transition: filter 0.2s; filter: drop-shadow(0 0 20px rgba(233, 69, 96, 0.6)); }
         .gamepad-icon:hover { filter: drop-shadow(0 0 30px rgba(233, 69, 96, 0.9)); }
         .score-display { font-size: 46px; font-weight: 800; color: #00ffcc; text-shadow: 0 0 15px rgba(0,255,204,0.6); }
 
-        /* --- СТИЛИ ДЛЯ КАЗИНО (СЕТКА) --- */
-        #tool-casino { max-width: 900px; }
-        .casino-grid { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; }
+        /* --- СТИЛИ ДЛЯ КАЗИНО (ВКЛАДКИ) --- */
+        #tool-casino { max-width: 700px; padding-top: 20px; }
         
+        .casino-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .casino-tab-btn { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            color: #ccc; padding: 12px 25px; border-radius: 12px; font-size: 16px; font-weight: 600; 
+            cursor: pointer; transition: 0.3s; flex: 1; 
+        }
+        .casino-tab-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .casino-tab-btn.active { 
+            background: linear-gradient(90deg, #e94560, #ff2e55); color: #fff; 
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4); border-color: #e94560; 
+        }
+
+        .casino-tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .casino-tab-content.active { display: block; }
+
         .casino-section { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .casino-title { font-size: 20px; font-weight: 800; color: #ffd700; margin-bottom: 15px; text-align: center; }
-        
         .bet-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .bet-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
         .bet-btn.active { background: #e94560; border-color: #e94560; box-shadow: 0 0 10px rgba(233, 69, 96, 0.5); }
         .bet-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .rps-buttons { display: flex; justify-content: space-between; gap: 10px; }
-        .rps-btn { font-size: 35px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.3s; flex: 1; }
-        .rps-btn:hover { background: rgba(255,255,255,0.15); }
-        
-        .guess-inputs { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 15px;}
-        .guess-inputs input { width: 80px; margin: 0; text-align: center; font-size: 20px; font-weight: bold; }
-        .guess-btn { background: #00ffcc; color: #000; font-weight: 800; border: none; padding: 15px 20px; border-radius: 10px; cursor: pointer; }
+        .rps-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px;}
+        .rps-btn { font-size: 45px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 15px; cursor: pointer; transition: 0.3s; flex: 1; }
+        .rps-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
 
         .cards-container { margin: 10px 0; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .hand-label { font-weight: bold; margin-bottom: 10px; font-size: 16px; color: #ccc; display: flex; justify-content: space-between; }
         .hand-score { color: #00ffcc; font-size: 18px; }
         .cards-row { display: flex; gap: 8px; justify-content: center; min-height: 75px; align-items: center; flex-wrap: wrap;}
-        .card { 
-            width: 50px; height: 75px; background: #fff; color: #000; border-radius: 8px; 
-            display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative; animation: dealCard 0.3s ease-out;
-        }
+        .card { width: 50px; height: 75px; background: #fff; color: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative; animation: dealCard 0.3s ease-out; }
         @keyframes dealCard { from { transform: translateY(-20px) scale(0.8); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .card.red { color: #e94560; }
         .card.hidden { background: repeating-linear-gradient(45deg, #16213e, #16213e 5px, #0f3460 5px, #0f3460 10px); color: transparent; border: 1px solid rgba(255,255,255,0.2); }
@@ -142,12 +127,7 @@
         
         .result-text { font-size: 18px; margin-top: 15px; min-height: 25px; font-weight: 600; text-align: center;}
 
-        @media (min-width: 850px) {
-            .casino-grid { grid-template-columns: 1fr 1fr; }
-            .casino-section.bj-section { grid-column: 1 / -1; }
-        }
-
-        /* СТИЛИ МАГАЗИНА */
+        /* МАГАЗИН */
         .shop-section-title { text-align: left; font-size: 18px; color: #ffd700; margin: 20px 0 10px 0; border-bottom: 1px solid rgba(255, 215, 0, 0.3); padding-bottom: 5px; }
         .shop-list { display: flex; flex-direction: column; gap: 10px; }
         .shop-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; display: flex; align-items: center; justify-content: space-between; }
@@ -221,6 +201,7 @@
         @media (max-width: 600px) {
             .top-right-balance { top: 15px; right: 15px; font-size: 18px; padding: 8px 15px; }
             .content { padding-top: 70px; }
+            .casino-tabs { flex-direction: column; }
         }
     </style>
 </head>
@@ -289,24 +270,49 @@
                 </div>
             </div>
 
+            <!-- ОБНОВЛЕННОЕ КАЗИНО С ВКЛАДКАМИ -->
             <div id="tool-casino" class="tool-box">
                 <h1>🎲 Казино</h1>
                 
-                <div class="casino-grid">
-                    <div class="casino-section bj-section">
-                        <div class="casino-title">Блэкджек (21)</div>
+                <div class="casino-tabs">
+                    <button class="casino-tab-btn active" onclick="switchCasinoTab('tab-rps', this)">✊ КНБ</button>
+                    <button class="casino-tab-btn" onclick="switchCasinoTab('tab-bj', this)">🃏 Блэкджек</button>
+                </div>
+
+                <!-- ВКЛАДКА КНБ -->
+                <div id="tab-rps" class="casino-tab-content active">
+                    <div class="casino-section">
+                        <div class="casino-title" style="margin-bottom: 15px; font-size: 18px; color: #fff;">Камень-Ножницы-Бумага</div>
+                        <div class="bet-buttons" id="rpsBets">
+                            <button class="bet-btn active" onclick="setBet('rps', 10, this)">10 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('rps', 50, this)">50 KLZ</button>
+                            <button class="bet-btn" onclick="setBet('rps', 100, this)">100 KLZ</button>
+                        </div>
+                        <div class="rps-buttons">
+                            <button class="rps-btn" onclick="playCasinoRPS('Камень')">✊</button>
+                            <button class="rps-btn" onclick="playCasinoRPS('Ножницы')">✌️</button>
+                            <button class="rps-btn" onclick="playCasinoRPS('Бумага')">✋</button>
+                        </div>
+                        <div class="result-text" id="rpsResult"></div>
+                    </div>
+                </div>
+
+                <!-- ВКЛАДКА БЛЭКДЖЕК -->
+                <div id="tab-bj" class="casino-tab-content">
+                    <div class="casino-section">
+                        <div class="casino-title" style="margin-bottom: 15px; font-size: 18px; color: #fff;">Блэкджек (21)</div>
                         <div class="bet-buttons" id="bjBets">
                             <button class="bet-btn active" onclick="setBet('bj', 10, this)">10 KLZ</button>
                             <button class="bet-btn" onclick="setBet('bj', 50, this)">50 KLZ</button>
                             <button class="bet-btn" onclick="setBet('bj', 100, this)">100 KLZ</button>
                         </div>
                         
-                        <div id="bjGameArea" style="display: flex; gap: 20px; justify-content: space-between; flex-wrap: wrap;">
-                            <div class="cards-container" style="flex: 1; min-width: 250px;">
+                        <div id="bjGameArea">
+                            <div class="cards-container">
                                 <div class="hand-label">Дилер: <span class="hand-score" id="dealerScore">0</span></div>
                                 <div class="cards-row" id="dealerCards"></div>
                             </div>
-                            <div class="cards-container" style="flex: 1; min-width: 250px;">
+                            <div class="cards-container">
                                 <div class="hand-label">Ты: <span class="hand-score" id="playerScore">0</span></div>
                                 <div class="cards-row" id="playerCards"></div>
                             </div>
@@ -322,37 +328,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="casino-section">
-                        <div class="casino-title">Камень-Ножницы-Бумага</div>
-                        <div class="bet-buttons" id="rpsBets">
-                            <button class="bet-btn active" onclick="setBet('rps', 10, this)">10 KLZ</button>
-                            <button class="bet-btn" onclick="setBet('rps', 50, this)">50 KLZ</button>
-                            <button class="bet-btn" onclick="setBet('rps', 100, this)">100 KLZ</button>
-                        </div>
-                        <div class="rps-buttons">
-                            <button class="rps-btn" onclick="playCasinoRPS('Камень')">✊</button>
-                            <button class="rps-btn" onclick="playCasinoRPS('Ножницы')">✌️</button>
-                            <button class="rps-btn" onclick="playCasinoRPS('Бумага')">✋</button>
-                        </div>
-                        <div class="result-text" id="rpsResult"></div>
-                    </div>
-
-                    <div class="casino-section">
-                        <div class="casino-title">Угадай число (x4)</div>
-                        <div class="bet-buttons" id="guessBets">
-                            <button class="bet-btn active" onclick="setBet('guess', 10, this)">10 KLZ</button>
-                            <button class="bet-btn" onclick="setBet('guess', 50, this)">50 KLZ</button>
-                            <button class="bet-btn" onclick="setBet('guess', 100, this)">100 KLZ</button>
-                        </div>
-                        <p style="font-size: 12px; color: #8899a6; margin-bottom: 10px; text-align: center;">Загадай число от 1 до 5. Угадаешь — получишь x4!</p>
-                        <div class="guess-inputs">
-                            <input type="number" id="guessInput" min="1" max="5" placeholder="1-5">
-                            <button class="guess-btn" onclick="playCasinoGuess()">Сыграть</button>
-                        </div>
-                        <div class="result-text" id="guessResult"></div>
-                    </div>
                 </div>
+
             </div>
 
             <div id="tool-shop" class="tool-box">
@@ -466,7 +443,7 @@
         
         let lastMessageTime = 0;
         let lastDmTime = 0;
-        let rpsBet = 10, guessBet = 10, bjBet = 10;
+        let rpsBet = 10, bjBet = 10;
         let currentDMFriend = null; 
 
         let bjDeck = [];
@@ -593,6 +570,15 @@
             btn.classList.add('active');
         };
 
+        // --- ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК КАЗИНО ---
+        window.switchCasinoTab = function(tabId, btn) {
+            document.querySelectorAll('.casino-tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.casino-tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            playClick();
+        };
+
         function updateUI() {
             document.getElementById("klzAmountTop").innerText = formatKlz(klz);
             document.getElementById("clickPowerDisplay").innerText = clickPower;
@@ -640,8 +626,6 @@
         window.setBet = function(game, amount, btn) {
             if (game === 'rps') {
                 rpsBet = amount; document.querySelectorAll('#rpsBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-            } else if (game === 'guess') {
-                guessBet = amount; document.querySelectorAll('#guessBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             } else if (game === 'bj') {
                 if (bjGameActive) return;
                 bjBet = amount; document.querySelectorAll('#bjBets .bet-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
@@ -661,23 +645,6 @@
                 } else if ((playerChoice === 'Камень' && computerChoice === 'Ножницы') || (playerChoice === 'Ножницы' && computerChoice === 'Бумага') || (playerChoice === 'Бумага' && computerChoice === 'Камень')) {
                     resultText += `Победа! +${rpsBet}`; resultBox.style.color = "#00ff66"; klz += rpsBet; playWinSound();
                 } else { resultText += `Проигрыш... -${rpsBet}`; resultBox.style.color = "#ff3333"; klz -= rpsBet; playLoseSound(); }
-                klz = Number(klz.toFixed(2));
-                resultBox.innerText = resultText; updateUI(); saveGameData();
-            }, 100);
-        };
-
-        window.playCasinoGuess = function() {
-            if (!currentUser) return;
-            if (klz < guessBet) { alert("Недостаточно KLZ для ставки!"); return; }
-            const input = document.getElementById("guessInput");
-            const userGuess = parseInt(input.value);
-            if (isNaN(userGuess) || userGuess < 1 || userGuess > 5) { alert("Введи число от 1 до 5!"); return; }
-            const computerNumber = Math.floor(Math.random() * 5) + 1; 
-            const resultBox = document.getElementById("guessResult");
-            let resultText = `Выпало: ${computerNumber}. `;
-            setTimeout(() => {
-                if (userGuess === computerNumber) { resultText += `Ты угадал! +${guessBet * 3}`; resultBox.style.color = "#00ff66"; klz += (guessBet * 3); playWinSound();
-                } else { resultText += `Не угадал... -${guessBet}`; resultBox.style.color = "#ff3333"; klz -= guessBet; playLoseSound(); }
                 klz = Number(klz.toFixed(2));
                 resultBox.innerText = resultText; updateUI(); saveGameData();
             }, 100);
@@ -925,6 +892,7 @@
                     }
                 }
             } else { reqContainer.innerHTML = "<div style='font-size:12px; color:#8899a6; text-align:center; padding:10px;'>Нет новых заявок</div>"; }
+            
             const friendsList = document.getElementById("friendsList"); friendsList.innerHTML = "";
             if (userData.friends.length > 0) {
                 for (const friendUid of userData.friends) {
@@ -933,13 +901,37 @@
                         const fData = docSnap.data();
                         let avatarHtml = (fData.customAvatarUrl && fData.customAvatarUrl.trim() !== "") ? `<img src="${fData.customAvatarUrl}">` : (fData.avatar || "👤");
                         let frameClass = fData.frame ? `frame-${fData.frame}` : "frame-none";
-                        const div = document.createElement("div"); div.className = "friend-item"; div.id = `friend-${friendUid}`;
+                        
+                        const div = document.createElement("div"); 
+                        div.className = "friend-item"; 
+                        div.id = `friend-${friendUid}`;
                         div.onclick = () => openDM(friendUid, fData.nickname, avatarHtml);
-                        div.innerHTML = `<div class="friend-info"><div class="user-avatar ${frameClass}" style="width:35px; height:35px; font-size:16px;">${avatarHtml}</div><div style="font-size:14px; font-weight:bold;">${fData.nickname}</div></div>`;
+                        
+                        div.innerHTML = `
+                            <div class="friend-info">
+                                <div class="user-avatar ${frameClass}" style="width:35px; height:35px; font-size:16px;">${avatarHtml}</div>
+                                <div style="font-size:14px; font-weight:bold;">${fData.nickname}</div>
+                            </div>
+                            <button class="req-btn decline" style="background:#ff3333; padding:5px 8px;" onclick="event.stopPropagation(); removeFriend('${friendUid}')">✖</button>
+                        `;
                         friendsList.appendChild(div);
                     }
                 }
             } else { friendsList.innerHTML = "<div style='font-size:12px; color:#8899a6; text-align:center; padding:10px;'>Пока нет друзей</div>"; }
+        };
+
+        window.removeFriend = async function(friendUid) {
+            if (!confirm("Ты уверен, что хочешь удалить этого друга?")) return;
+            await updateDoc(doc(db, "users", currentUser.uid), { friends: arrayRemove(friendUid) });
+            await updateDoc(doc(db, "users", friendUid), { friends: arrayRemove(currentUser.uid) });
+            
+            if (currentDMFriend === friendUid) {
+                currentDMFriend = null;
+                document.getElementById("dmPlaceholder").style.display = "flex";
+                document.getElementById("dmChatContainer").classList.add("hidden");
+                if (dmUnsubscribe) { dmUnsubscribe(); dmUnsubscribe = null; }
+            }
+            playLoseSound(); loadFriendsData();
         };
 
         window.acceptFriend = async function(friendUid) {
@@ -1040,14 +1032,31 @@
             try {
                 const querySnapshot = await getDocs(collection(db, "users"));
                 let usersArray = [];
-                querySnapshot.forEach(doc => { const d = doc.data(); if(d.email) usersArray.push(d); });
+                let seenEmails = new Set();
+
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.email) {
+                        if (!seenEmails.has(data.email)) {
+                            usersArray.push(data); seenEmails.add(data.email);
+                        } else {
+                            let index = usersArray.findIndex(u => u.email === data.email);
+                            if (index !== -1 && (data.klz || 0) > (usersArray[index].klz || 0)) {
+                                usersArray[index] = data; 
+                            }
+                        }
+                    }
+                });
+
                 usersArray.sort((a, b) => (b.klz || 0) - (a.klz || 0));
+
                 usersArray.forEach((data, index) => {
                     let rank = index + 1;
                     let medal = rank === 1 ? "🥇 " : rank === 2 ? "🥈 " : rank === 3 ? "🥉 " : "";
                     let badgeHtml = data.email === CREATOR_EMAIL ? '<span class="badge-creator">СОЗДАТЕЛЬ</span>' : "";
                     let avatarHtml = (data.customAvatarUrl && data.customAvatarUrl.trim() !== "") ? `<img src="${data.customAvatarUrl}">` : (data.avatar || "👤");
                     let frameClass = data.frame ? `frame-${data.frame}` : "frame-none";
+                    
                     const li = document.createElement("li"); li.className = `user-item ${rank <= 3 ? 'rank-' + rank : ''}`;
                     li.innerHTML = `<div class="user-info-left"><div class="rank-number" style="width:30px; font-weight:bold; color:#8899a6;">${medal}${rank}</div><div class="user-avatar ${frameClass}">${avatarHtml}</div><div><div class="user-nick-list">${data.nickname || "Без имени"} ${badgeHtml}</div><div class="user-email-list">${data.email}</div></div></div><div class="user-score">${formatKlz(data.klz || 0)} KLZ</div>`;
                     list.appendChild(li);
